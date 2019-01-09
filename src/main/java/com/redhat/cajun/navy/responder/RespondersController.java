@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class RespondersController {
 
     @RequestMapping("/stats")
-    public RespondersStats stats() {
+    public ResponderStats stats() {
 
-        RespondersStats respondersStats = new RespondersStats();
+        ResponderStats responderStats = new ResponderStats();
 
-        respondersStats.setTotal(100);
-        respondersStats.setActive(50);
+        responderStats.setTotal(100);
+        responderStats.setActive(50);
 
-        return respondersStats;
+        return responderStats;
     }
 
 }

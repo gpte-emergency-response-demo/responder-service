@@ -2,7 +2,7 @@ package com.redhat.cajun.navy.responder;
 
 import java.util.Objects;
 
-public class RespondersStats {
+public class ResponderStats {
 
     private int active;
     private int total;
@@ -27,7 +27,7 @@ public class RespondersStats {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RespondersStats that = (RespondersStats) o;
+        ResponderStats that = (ResponderStats) o;
         return active == that.active &&
                 total == that.total;
     }
@@ -39,7 +39,7 @@ public class RespondersStats {
 
     @Override
     public String toString() {
-        return "RespondersStats{" +
+        return "ResponderStats{" +
                 "active=" + active +
                 ", total=" + total +
                 '}';
