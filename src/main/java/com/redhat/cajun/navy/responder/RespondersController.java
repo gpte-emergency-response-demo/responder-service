@@ -1,6 +1,7 @@
 package com.redhat.cajun.navy.responder;
 
 import com.redhat.cajun.navy.responder.model.Responder;
+import com.redhat.cajun.navy.responder.model.ResponderStats;
 import com.redhat.cajun.navy.responder.service.ResponderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,7 @@ public class RespondersController {
 
     @RequestMapping(value = "/stats", method = RequestMethod.GET, produces = "application/json")
     public ResponderStats stats() {
-
-        ResponderStats responderStats = responderService.getResponderStats();
-        return responderStats;
+        return responderService.getResponderStats();
     }
 
     @RequestMapping(value = "/responder/{id}", method = RequestMethod.GET, produces = "application/json")

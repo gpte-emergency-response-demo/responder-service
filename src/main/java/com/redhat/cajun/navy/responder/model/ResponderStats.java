@@ -1,4 +1,4 @@
-package com.redhat.cajun.navy.responder;
+package com.redhat.cajun.navy.responder.model;
 
 import java.util.Objects;
 

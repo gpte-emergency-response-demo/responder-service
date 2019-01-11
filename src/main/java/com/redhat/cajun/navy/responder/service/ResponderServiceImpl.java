@@ -2,7 +2,7 @@ package com.redhat.cajun.navy.responder.service;
 
 import javax.sql.DataSource;
 
-import com.redhat.cajun.navy.responder.ResponderStats;
+import com.redhat.cajun.navy.responder.model.ResponderStats;
 import com.redhat.cajun.navy.responder.model.Responder;
 import com.redhat.cajun.navy.responder.model.ResponderRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
