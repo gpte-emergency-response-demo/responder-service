@@ -1,0 +1,188 @@
+{
+  "openapi" : "3.0.2",
+  "info" : {
+    "title" : "Responder",
+    "version" : "1.0.0"
+  },
+  "paths" : {
+    "/responders" : {
+      "summary" : "Path used to manage the list of Responders.",
+      "description" : "The REST endpoint/path used to list and create zero or more `Responder` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
+      "get" : {
+        "summary" : "List All Responders",
+        "description" : "Gets a list of all `Responder` entities.",
+        "operationId" : "getResponders",
+        "responses" : {
+          "200" : {
+            "description" : "Successful response - returns an array of `Responder` entities.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Responder"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a Responder",
+        "description" : "Creates a new instance of a `Responder`.",
+        "operationId" : "createResponder",
+        "requestBody" : {
+          "description" : "A new `Responder` to be created.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Responder"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Successful response."
+          }
+        }
+      }
+    },
+    "/responders/{responderId}" : {
+      "summary" : "Path used to manage a single Responder.",
+      "description" : "The REST endpoint/path used to get a single instance of a `Responder`. ",
+      "get" : {
+        "summary" : "Get a Responder",
+        "description" : "Gets the details of a single instance of a `Responder`.",
+        "operationId" : "getResponder",
+        "responses" : {
+          "200" : {
+            "description" : "Successful response - returns a single `Responder`.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Responder"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "responderId",
+        "in" : "path",
+        "description" : "A unique identifier for a `Responder`.",
+        "required" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/responders/add" : {
+      "summary" : "This path is used to add a Responder.",
+      "description" : "The REST endpoint/path used to add a single instance of a `Responder`. ",
+      "put" : {
+        "summary" : "Add a Responder",
+        "description" : "The REST endpoint/path used to add a single instance of a `Responder`. ",
+        "operationId" : "putResponder",
+        "requestBody" : {
+          "description" : "The full `Responder` object.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Responder"
+              },
+              "examples" : {
+                "Add Responder Example" : {
+                  "value" : {
+                    "name" : "full name",
+                    "phoneNumber" : "555-555-5555",
+                    "lat" : "34.16877",
+                    "long" : "-77.87045",
+                    "boatCapacity" : 10,
+                    "hasMedical" : true,
+                    "hasMission" : false,
+                    "isAvailable" : true
+                  }
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "`Responder` has been added."
+          },
+          "500" : {
+            "description" : "Returns an `Error` response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Responder" : {
+        "title" : "Root Type for Responder",
+        "description" : "The root of the Responder type's schema.",
+        "required" : [ "boatCapacity", "hasMedical", "lat", "long", "name", "isAvailable", "phoneNumber" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "phoneNumber" : {
+            "type" : "string"
+          },
+          "lat" : {
+            "type" : "string"
+          },
+          "long" : {
+            "type" : "string"
+          },
+          "boatCapacity" : {
+            "type" : "integer"
+          },
+          "hasMedical" : {
+            "type" : "boolean"
+          },
+          "hasMission" : {
+            "type" : "boolean"
+          },
+          "isAvailable" : {
+            "type" : "boolean"
+          }
+        },
+        "example" : "{\n    \"id\": 1,\n    \"name\": \"full name\",\n    \"phoneNumber\": \"555-555-5555\",\n    \"lat\": \"34.16877\",\n    \"long\": \"-77.87045\",\n    \"boatCapacity\": 10,\n    \"hasMedical\": true,\n    \"hasMission\": false,\n    \"isAvailable\": false\n}"
+      },
+      "Error" : {
+        "title" : "Root Type for Error",
+        "description" : "The root of the Error type's schema.",
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "example" : "{\n    \"code\": 1,\n    \"message\": \"Error message\"\n}"
+      }
+    }
+  }
+}
