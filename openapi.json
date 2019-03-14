@@ -139,7 +139,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "integer"
+            "type" : "string"
           },
           "name" : {
             "type" : "string"
@@ -166,7 +166,17 @@
             "type" : "boolean"
           }
         },
-        "example" : "{\n    \"id\": 1,\n    \"name\": \"full name\",\n    \"phoneNumber\": \"555-555-5555\",\n    \"lat\": \"34.16877\",\n    \"long\": \"-77.87045\",\n    \"boatCapacity\": 10,\n    \"hasMedical\": true,\n    \"hasMission\": false,\n    \"isAvailable\": false\n}"
+        "example" : {
+          "id" : "1",
+          "name" : "full name",
+          "phoneNumber" : "555-555-5555",
+          "lat" : "34.16877",
+          "long" : "-77.87045",
+          "boatCapacity" : 10,
+          "hasMedical" : true,
+          "hasMission" : false,
+          "isAvailable" : false
+        }
       },
       "Error" : {
         "title" : "Root Type for Error",
