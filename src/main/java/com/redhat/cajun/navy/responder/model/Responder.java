@@ -18,59 +18,87 @@ public class Responder {
 
     private boolean medicalKit;
 
+    private boolean available;
+
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
-    }
-
     public BigDecimal getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
     }
 
     public int getBoatCapacity() {
         return boatCapacity;
     }
 
-    public void setBoatCapacity(int boatCapacity) {
-        this.boatCapacity = boatCapacity;
-    }
-
     public boolean isMedicalKit() {
         return medicalKit;
     }
 
-    public void setMedicalKit(boolean medicalKit) {
-        this.medicalKit = medicalKit;
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public static class Builder {
+
+        private final Responder responder;
+
+        public Builder(long id) {
+            this.responder = new Responder();
+            responder.id = id;
+        }
+
+        public Builder name(String name) {
+            responder.name = name;
+            return this;
+        }
+
+        public Builder phoneNumber(String phoneNumber) {
+            responder.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder latitude(BigDecimal latitude) {
+            responder.latitude = latitude;
+            return this;
+        }
+
+        public Builder longitude(BigDecimal longitude) {
+            responder.longitude = longitude;
+            return this;
+        }
+
+        public Builder boatCapacity(int boatCapacity) {
+            responder.boatCapacity = boatCapacity;
+            return this;
+        }
+
+        public Builder medicalKit(boolean medicalKit) {
+            responder.medicalKit = medicalKit;
+            return this;
+        }
+
+        public Builder available(boolean available) {
+            responder.available = available;
+            return this;
+        }
+
+        public Responder build() {
+            return responder;
+        }
+
     }
 }

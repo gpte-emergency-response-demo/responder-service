@@ -1,7 +1,9 @@
 package com.redhat.cajun.navy.responder.service;
 
-import com.redhat.cajun.navy.responder.model.ResponderStats;
+import java.util.List;
+
 import com.redhat.cajun.navy.responder.model.Responder;
+import com.redhat.cajun.navy.responder.model.ResponderStats;
 
 public interface ResponderService {
 
@@ -9,4 +11,5 @@ public interface ResponderService {
 
     Responder getResponder(long id);
 
+    List<Responder> availableResponders();
 }

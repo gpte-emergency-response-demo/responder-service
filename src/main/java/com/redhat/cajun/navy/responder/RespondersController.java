@@ -1,5 +1,7 @@
 package com.redhat.cajun.navy.responder;
 
+import java.util.List;
+
 import com.redhat.cajun.navy.responder.model.Responder;
 import com.redhat.cajun.navy.responder.model.ResponderStats;
 import com.redhat.cajun.navy.responder.service.ResponderService;
@@ -31,6 +33,11 @@ public class RespondersController {
         } else {
             return new ResponseEntity<>(responder, HttpStatus.OK);
         }
+    }
+
+    @RequestMapping(value = "/available", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<List<Responder>> activeResponders() {
+        return new ResponseEntity<>(responderService.availableResponders(), HttpStatus.OK);
     }
 
 }
