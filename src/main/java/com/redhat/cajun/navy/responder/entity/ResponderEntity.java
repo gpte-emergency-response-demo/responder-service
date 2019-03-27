@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Access(AccessType.FIELD)
@@ -43,6 +44,10 @@ public class ResponderEntity {
     @Column(name = "available")
     private boolean available;
 
+    @Column(name = "version")
+    @Version
+    private long version;
+
     public long getId() {
         return id;
     }
@@ -75,12 +80,29 @@ public class ResponderEntity {
         return available;
     }
 
+    public long getVersion() {
+        return version;
+    }
+
     public static class Builder {
 
         private final ResponderEntity responder;
 
         public Builder() {
             this.responder = new ResponderEntity();
+        }
+
+        public Builder(ResponderEntity r) {
+            this.responder = new ResponderEntity();
+            responder.id = r.getId();
+            responder.available = r.isAvailable();
+            responder.medicalKit = r.getMedicalKit();
+            responder.boatCapacity = r.getBoatCapacity();
+            responder.currentPositionLatitude = r.getCurrentPositionLatitude();
+            responder.currentPositionLongitude = r.getCurrentPositionLongitude();
+            responder.name = r.getName();
+            responder.phoneNumber = r.getPhoneNumber();
+            responder.version = r.getVersion();
         }
 
         public Builder name(String name) {

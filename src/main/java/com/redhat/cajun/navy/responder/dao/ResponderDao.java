@@ -2,6 +2,7 @@ package com.redhat.cajun.navy.responder.dao;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -21,6 +22,15 @@ public class ResponderDao {
     public void deleteAll() {
         Query deleteAll = entityManager.createQuery("DELETE FROM ResponderEntity");
         deleteAll.executeUpdate();
+    }
+
+    public ResponderEntity findById(long id) {
+        return entityManager.find(ResponderEntity.class, id, LockModeType.OPTIMISTIC);
+    }
+
+    public void merge(ResponderEntity responder) {
+        entityManager.merge(responder);
+        entityManager.flush();
     }
 
     @SuppressWarnings("unchecked")
