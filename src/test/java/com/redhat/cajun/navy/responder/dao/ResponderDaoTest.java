@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.persistence.OptimisticLockException;
 
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
@@ -19,24 +18,20 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
-import org.springframework.boot.autoconfigure.transaction.jta.NarayanaJtaConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @ActiveProfiles("test")
-@ContextConfiguration(classes = {ResponderEntity.class, ResponderDao.class, JpaProperties.class, NarayanaJtaConfiguration.class,
-        HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class})
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ResponderDao.class))
 public class ResponderDaoTest {
 
     @Autowired
@@ -103,6 +98,10 @@ public class ResponderDaoTest {
 
     @Test
     public void testFindById() {
+
+        //stop the current transaction
+        TestTransaction.end();
+
         ResponderEntity responder = new ResponderEntity.Builder()
                 .name("John Foo")
                 .phoneNumber("999-888-777")
@@ -130,6 +129,10 @@ public class ResponderDaoTest {
 
     @Test
     public void testUpdateEntity() {
+
+        //stop the current transaction
+        TestTransaction.end();
+
         ResponderEntity responder = new ResponderEntity.Builder()
                 .name("John Foo")
                 .phoneNumber("999-888-777")
@@ -163,14 +166,15 @@ public class ResponderDaoTest {
             assertThat(r.isAvailable(), equalTo(false));
             return null;
         });
-
-
     }
 
     @Test
     public void testOptimisticLocking() throws Exception {
 
-        CountDownLatch latch = new CountDownLatch(2);
+        //stop the current transaction
+        TestTransaction.end();
+
+        CountDownLatch latch = new CountDownLatch(1);
         CountDownLatch thread2Latch = new CountDownLatch(1);
 
         ResponderEntity responder = new ResponderEntity.Builder()
@@ -197,9 +201,9 @@ public class ResponderDaoTest {
                     // wait for thread2 to finish
                     thread2Latch.await(10, TimeUnit.SECONDS);
 
-                    ResponderEntity r2 = new ResponderEntity.Builder(r).available(false).build();
+                    ResponderEntity r2 = new ResponderEntity.Builder(r).currentPositionLatitude(new BigDecimal("20.12345")).available(false).build();
                     responderDao.merge(r2);
-                    // OptimisticLockException is expected
+                    //OptimisticLockException is expected
                     Assert.fail();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -216,7 +220,7 @@ public class ResponderDaoTest {
             template2.execute((TransactionStatus s) -> {
                 try {
                     ResponderEntity r = responderDao.findById(responder.getId());
-                    ResponderEntity r2 = new ResponderEntity.Builder(r).available(false).build();
+                    ResponderEntity r2 = new ResponderEntity.Builder(r).currentPositionLatitude(new BigDecimal("30.12345")).available(false).build();
                     responderDao.merge(r2);
                 } finally {
                     thread2Latch.countDown();
@@ -235,6 +239,7 @@ public class ResponderDaoTest {
         template.execute((TransactionStatus s) -> {
             ResponderEntity r = responderDao.findById(responder.getId());
             assertThat(r.isAvailable(), equalTo(false));
+            assertThat(r.getCurrentPositionLatitude(), equalTo(new BigDecimal("30.12345")));
             return null;
         });
     }

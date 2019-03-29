@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.redhat.cajun.navy.responder.dao.ResponderDao;
 import com.redhat.cajun.navy.responder.listener.ResponderCommandMessageListener;
 import com.redhat.cajun.navy.responder.model.Responder;
 import com.redhat.cajun.navy.responder.service.ResponderService;
@@ -29,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration(exclude= {KafkaAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+
 public class ResponderControllerIT {
 
     @Value("${local.server.port}")
@@ -39,6 +41,9 @@ public class ResponderControllerIT {
 
     @MockBean
     private ResponderCommandMessageListener responderCommandMessageListener;
+
+    @MockBean
+    private ResponderDao rideDao;
 
     @Before
     public void initTest() {

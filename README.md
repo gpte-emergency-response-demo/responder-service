@@ -1,6 +1,6 @@
-# responder-service
-REST Service for the Responder Resource
+#### Responder Service
 
-See the README for the Incident Service. This service follows the same patterns.
+* Implemented with Spring Boot - version 2.1.3.RELEASE (aligned with latest RHOAR release). 
+* JPA with Hibernate
+* Spring Kafka client (version 2.2.2.RELEASE) to consume and receive messages from Kafka
 
-https://github.com/NAPS-emergency-response-project/incident-service
