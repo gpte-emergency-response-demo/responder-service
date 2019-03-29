@@ -1,8 +1,9 @@
 package com.redhat.cajun.navy.responder;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,50 +12,54 @@ import java.util.List;
 import com.redhat.cajun.navy.responder.listener.ResponderCommandMessageListener;
 import com.redhat.cajun.navy.responder.model.Responder;
 import com.redhat.cajun.navy.responder.service.ResponderService;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.MimeTypeUtils;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@EnableAutoConfiguration(exclude= {KafkaAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-public class ResponderControllerIT {
-
-    @Value("${local.server.port}")
-    private int port;
+@ContextConfiguration(classes = {
+       RespondersController.class, ResponderService.class
+})
+public class ResponderControllerMvcTest {
 
     @MockBean
     private ResponderService responderService;
+
+    @Autowired
+    private RespondersController controller;
+
+    private MockMvc mockMvc;
 
     @MockBean
     private ResponderCommandMessageListener responderCommandMessageListener;
 
     @Before
     public void initTest() {
-        RestAssured.baseURI = String.format("http://localhost:%d", port);
-        initService();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(controller)
+                .build();
     }
 
     @Test
-    public void testAvailableResponders() {
+    public void testAvailableResponders() throws Exception {
 
-        given().request().get("/responders/available")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("size()", is(2));
+        initService();
+
+        final ResultActions result = mockMvc.perform(
+                get("/responders/available").accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
+
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.length()").value(2));
 
     }
 

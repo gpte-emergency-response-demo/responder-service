@@ -16,6 +16,7 @@
     <version.spring-boot>1.5.17.SP1-redhat-00002</version.spring-boot>
     <version.spring-boot-maven-plugin>1.5.17.RELEASE</version.spring-boot-maven-plugin>
     <version.hibernate>5.3.7.Final-redhat-00001</version.hibernate>
+    <version.spring-kafka>2.2.2.RELEASE</version.spring-kafka>
     <version.fabric8-maven-plugin>3.5.39</version.fabric8-maven-plugin>
     <version.logback>1.2.3</version.logback>
   </properties>
@@ -97,6 +98,21 @@
       <artifactId>postgresql</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+      <version>${version.spring-kafka}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jayway.jsonpath</groupId>
+      <artifactId>json-path</artifactId>
+      <version>2.4.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
@@ -113,7 +129,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>

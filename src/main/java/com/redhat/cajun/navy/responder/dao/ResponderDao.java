@@ -28,9 +28,10 @@ public class ResponderDao {
         return entityManager.find(ResponderEntity.class, id, LockModeType.OPTIMISTIC);
     }
 
-    public void merge(ResponderEntity responder) {
-        entityManager.merge(responder);
+    public ResponderEntity merge(ResponderEntity responder) {
+        ResponderEntity r = entityManager.merge(responder);
         entityManager.flush();
+        return r;
     }
 
     @SuppressWarnings("unchecked")

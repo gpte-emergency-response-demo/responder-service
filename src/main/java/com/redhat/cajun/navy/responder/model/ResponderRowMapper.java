@@ -12,7 +12,7 @@ public class ResponderRowMapper implements RowMapper<Responder> {
     @Override
     public Responder mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-        return new Responder.Builder(rs.getLong("responder_id"))
+        return new Responder.Builder(Long.toString(rs.getLong("responder_id")))
                 .name(rs.getString("responder_name"))
                 .phoneNumber(rs.getString("responder_phone_number"))
                 .boatCapacity(rs.getInt("boat_capacity"))

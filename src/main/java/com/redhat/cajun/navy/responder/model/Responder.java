@@ -1,10 +1,11 @@
 package com.redhat.cajun.navy.responder.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Responder {
 
-    private long id;
+    private String id;
 
     private String name;
 
@@ -14,13 +15,13 @@ public class Responder {
 
     private BigDecimal longitude;
 
-    private int boatCapacity;
+    private Integer boatCapacity;
 
-    private boolean medicalKit;
+    private Boolean medicalKit;
 
-    private boolean available;
+    private Boolean available;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -40,15 +41,15 @@ public class Responder {
         return longitude;
     }
 
-    public int getBoatCapacity() {
+    public Integer getBoatCapacity() {
         return boatCapacity;
     }
 
-    public boolean isMedicalKit() {
+    public Boolean isMedicalKit() {
         return medicalKit;
     }
 
-    public boolean isAvailable() {
+    public Boolean isAvailable() {
         return available;
     }
 
@@ -56,7 +57,7 @@ public class Responder {
 
         private final Responder responder;
 
-        public Builder(long id) {
+        public Builder(String id) {
             this.responder = new Responder();
             responder.id = id;
         }
@@ -81,17 +82,17 @@ public class Responder {
             return this;
         }
 
-        public Builder boatCapacity(int boatCapacity) {
+        public Builder boatCapacity(Integer boatCapacity) {
             responder.boatCapacity = boatCapacity;
             return this;
         }
 
-        public Builder medicalKit(boolean medicalKit) {
+        public Builder medicalKit(Boolean medicalKit) {
             responder.medicalKit = medicalKit;
             return this;
         }
 
-        public Builder available(boolean available) {
+        public Builder available(Boolean available) {
             responder.available = available;
             return this;
         }
@@ -100,5 +101,37 @@ public class Responder {
             return responder;
         }
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Responder responder = (Responder) o;
+
+        if (!id.equals(responder.id)) return false;
+        if (!Objects.equals(name, responder.name)) return false;
+        if (!Objects.equals(phoneNumber, responder.phoneNumber))
+            return false;
+        if (!Objects.equals(latitude, responder.latitude)) return false;
+        if (!Objects.equals(longitude, responder.longitude)) return false;
+        if (!Objects.equals(boatCapacity, responder.boatCapacity))
+            return false;
+        if (!Objects.equals(medicalKit, responder.medicalKit)) return false;
+        return Objects.equals(available, responder.available);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
+        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
+        result = 31 * result + (boatCapacity != null ? boatCapacity.hashCode() : 0);
+        result = 31 * result + (medicalKit != null ? medicalKit.hashCode() : 0);
+        result = 31 * result + (available != null ? available.hashCode() : 0);
+        return result;
     }
 }

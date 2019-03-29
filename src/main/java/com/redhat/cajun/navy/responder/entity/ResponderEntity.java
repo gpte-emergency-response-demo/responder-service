@@ -36,13 +36,13 @@ public class ResponderEntity {
     private BigDecimal currentPositionLongitude;
 
     @Column(name = "boat_capacity")
-    private int boatCapacity;
+    private Integer boatCapacity;
 
     @Column(name = "has_medical_kit")
-    private boolean medicalKit;
+    private Boolean medicalKit;
 
     @Column(name = "available")
-    private boolean available;
+    private Boolean available;
 
     @Column(name = "version")
     @Version
@@ -68,15 +68,15 @@ public class ResponderEntity {
         return currentPositionLongitude;
     }
 
-    public int getBoatCapacity() {
+    public Integer getBoatCapacity() {
         return boatCapacity;
     }
 
-    public boolean getMedicalKit() {
+    public Boolean getMedicalKit() {
         return medicalKit;
     }
 
-    public boolean isAvailable() {
+    public Boolean isAvailable() {
         return available;
     }
 
@@ -90,6 +90,11 @@ public class ResponderEntity {
 
         public Builder() {
             this.responder = new ResponderEntity();
+        }
+
+        public Builder(long id) {
+            this.responder = new ResponderEntity();
+            responder.id = id;
         }
 
         public Builder(ResponderEntity r) {
