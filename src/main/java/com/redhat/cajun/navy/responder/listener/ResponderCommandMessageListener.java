@@ -44,11 +44,11 @@ public class ResponderCommandMessageListener {
     public void processMessage(@Payload String messageAsJson) {
 
         acceptMessageType(messageAsJson).ifPresent(m -> {
-            processUpdateResponderAvailabilityCommand(messageAsJson);
+            processUpdateResponderCommand(messageAsJson);
         });
     }
 
-    private void processUpdateResponderAvailabilityCommand(String messageAsJson) {
+    private void processUpdateResponderCommand(String messageAsJson) {
 
         Message<UpdateResponderCommand> message;
         try {
