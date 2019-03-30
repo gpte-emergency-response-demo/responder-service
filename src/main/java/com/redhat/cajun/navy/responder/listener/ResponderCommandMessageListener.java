@@ -54,6 +54,9 @@ public class ResponderCommandMessageListener {
         try {
             message = new ObjectMapper().readValue(messageAsJson, new TypeReference<Message<UpdateResponderCommand>>() {});
             Responder responder = message.getBody().getResponder();
+
+            log.debug("Processing '" + UPDATE_RESPONDER_COMMAND + "' message for responder '" + responder.getId() + "'");
+
             Triple<Boolean, String, Responder> result = responderService.updateResponder(responder);
             String status = (result.getLeft() ? "success" : "error");
             ResponderUpdatedEvent event = new ResponderUpdatedEvent.Builder(status, result.getRight())
