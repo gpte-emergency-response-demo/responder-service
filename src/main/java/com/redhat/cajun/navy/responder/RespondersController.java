@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/responders")
+@RequestMapping("/")
 public class RespondersController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class RespondersController {
         }
     }
 
-    @RequestMapping(value = "/responder/name/{name}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/responder/byname/{name}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<Responder> responderByName(@PathVariable String name) {
         Responder responder = responderService.getResponderByName(name);
         if (responder == null) {
@@ -47,7 +47,7 @@ public class RespondersController {
         }
     }
 
-    @RequestMapping(value = "/available", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/responders/available", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Responder>> activeResponders() {
         return new ResponseEntity<>(responderService.availableResponders(), HttpStatus.OK);
     }

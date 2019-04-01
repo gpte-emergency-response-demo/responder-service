@@ -90,7 +90,7 @@ public class ResponderControllerIT {
                 "\"available\": true" +
                 "}";
 
-        given().request().contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).body(json).post("/responders/responder")
+        given().request().contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).body(json).post("/responder")
                 .then()
                 .assertThat()
                 .statusCode(201);
@@ -122,7 +122,7 @@ public class ResponderControllerIT {
 
         when(responderService.getResponderByName(any(String.class))).thenReturn(responder);
 
-        URI url = UriComponentsBuilder.fromUriString("/responders/responder/name").pathSegment("John Doe").build().encode().toUri();
+        URI url = UriComponentsBuilder.fromUriString("/responder/byname").pathSegment("John Doe").build().encode().toUri();
         given().request().get(url.toASCIIString())
                 .then()
                 .assertThat()
@@ -136,7 +136,7 @@ public class ResponderControllerIT {
 
         when(responderService.getResponderByName(any(String.class))).thenReturn(null);
 
-        URI url = UriComponentsBuilder.fromUriString("/responders/responder/name").pathSegment("John Doe").build().encode().toUri();
+        URI url = UriComponentsBuilder.fromUriString("/responder/byname").pathSegment("John Doe").build().encode().toUri();
         given().request().get(url.toASCIIString())
                 .then()
                 .assertThat()

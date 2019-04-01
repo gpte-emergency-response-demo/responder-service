@@ -90,7 +90,7 @@ public class ResponderControllerMvcTest {
                 "\"available\": true" +
                 "}";
 
-        final ResultActions result = mockMvc.perform(post("/responders/responder")
+        final ResultActions result = mockMvc.perform(post("/responder")
                 .contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).content(json));
 
         result.andExpect(status().isCreated());
@@ -121,7 +121,7 @@ public class ResponderControllerMvcTest {
 
         when(responderService.getResponderByName(any(String.class))).thenReturn(responder);
 
-        URI url = UriComponentsBuilder.fromUriString("/responders/responder/name").pathSegment("John Doe").build().encode().toUri();
+        URI url = UriComponentsBuilder.fromUriString("/responder/byname").pathSegment("John Doe").build().encode().toUri();
         final ResultActions result = mockMvc.perform(get(url).accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
 
         result.andExpect(status().isOk());
@@ -135,7 +135,7 @@ public class ResponderControllerMvcTest {
 
         when(responderService.getResponderByName(any(String.class))).thenReturn(null);
 
-        URI url = UriComponentsBuilder.fromUriString("/responders/responder/name").pathSegment("John Doe").build().encode().toUri();
+        URI url = UriComponentsBuilder.fromUriString("/responder/byname").pathSegment("John Doe").build().encode().toUri();
         final ResultActions result = mockMvc.perform(get(url).accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
 
         result.andExpect(status().isNotFound());

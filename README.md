@@ -4,3 +4,4 @@
 * JPA with Hibernate
 * Spring Kafka client (version 2.2.2.RELEASE) to consume and receive messages from Kafka
 
+REST endpoints specificatons: see openapi.json in project root

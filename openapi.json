@@ -1,197 +1,270 @@
 {
-  "openapi" : "3.0.2",
-  "info" : {
-    "title" : "Responder",
-    "version" : "1.0.0"
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Responder",
+    "version": "1.0.0"
   },
-  "paths" : {
-    "/responders" : {
-      "summary" : "Path used to manage the list of Responders.",
-      "description" : "The REST endpoint/path used to list and create zero or more `Responder` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
-      "get" : {
-        "summary" : "List All Responders",
-        "description" : "Gets a list of all `Responder` entities.",
-        "operationId" : "getResponders",
-        "responses" : {
-          "200" : {
-            "description" : "Successful response - returns an array of `Responder` entities.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Responder"
+  "paths": {
+    "/responder": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Responder"
+              },
+              "examples": {
+                "Create Responder Example": {
+                  "value": {
+                    "name": "John Doe",
+                    "phoneNumber": "111-222-333",
+                    "latitude": 30.12345,
+                    "longitude": -70.98765,
+                    "boatCapacity": 3,
+                    "medicalKit": true,
+                    "available": true
                   }
                 }
               }
             }
-          }
-        }
-      },
-      "post" : {
-        "summary" : "Create a Responder",
-        "description" : "Creates a new instance of a `Responder`.",
-        "operationId" : "createResponder",
-        "requestBody" : {
-          "description" : "A new `Responder` to be created.",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/Responder"
-              }
-            }
           },
-          "required" : true
+          "required": true
         },
-        "responses" : {
-          "201" : {
-            "description" : "Successful response."
+        "responses": {
+          "201": {
+            "description": "Success"
           }
         }
       }
     },
-    "/responders/{responderId}" : {
-      "summary" : "Path used to manage a single Responder.",
-      "description" : "The REST endpoint/path used to get a single instance of a `Responder`. ",
-      "get" : {
-        "summary" : "Get a Responder",
-        "description" : "Gets the details of a single instance of a `Responder`.",
-        "operationId" : "getResponder",
-        "responses" : {
-          "200" : {
-            "description" : "Successful response - returns a single `Responder`.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Responder"
+    "/responders/available": {
+      "get": {
+        "summary": "Get List of Available Responders",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponderList"
+                },
+                "examples": {
+                  "List  Of Responders": {
+                    "value": [
+                      {
+                        "id": "1",
+                        "name": "John Doe",
+                        "phoneNumber": "111-222-333",
+                        "latitude": 30.12345,
+                        "longitude": -70.98765,
+                        "boatCapacity": 3,
+                        "medicalKit": true,
+                        "available": true
+                      },
+                      {
+                        "id": "2",
+                        "name": "Mary Foo",
+                        "phoneNumber": "999-888-777",
+                        "latitude": 32.989765,
+                        "longitude": -71.12345,
+                        "boatCapacity": 2,
+                        "medicalKit": false,
+                        "available": true
+                      }
+                    ]
+                  }
                 }
               }
             }
           }
         }
-      },
-      "parameters" : [ {
-        "name" : "responderId",
-        "in" : "path",
-        "description" : "A unique identifier for a `Responder`.",
-        "required" : true,
-        "schema" : {
-          "type" : "string"
-        }
-      } ]
+      }
     },
-    "/responders/add" : {
-      "summary" : "This path is used to add a Responder.",
-      "description" : "The REST endpoint/path used to add a single instance of a `Responder`. ",
-      "put" : {
-        "summary" : "Add a Responder",
-        "description" : "The REST endpoint/path used to add a single instance of a `Responder`. ",
-        "operationId" : "putResponder",
-        "requestBody" : {
-          "description" : "The full `Responder` object.",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/Responder"
-              },
-              "examples" : {
-                "Add Responder Example" : {
-                  "value" : {
-                    "name" : "full name",
-                    "phoneNumber" : "555-555-5555",
-                    "lat" : "34.16877",
-                    "long" : "-77.87045",
-                    "boatCapacity" : 10,
-                    "hasMedical" : true,
-                    "hasMission" : false,
-                    "isAvailable" : true
+    "/responder/byname/{name}": {
+      "get": {
+        "summary": "Get Responder By Name",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responder"
+                },
+                "examples": {
+                  "Responder": {
+                    "value": {
+                      "id": "1",
+                      "name": "John Doe",
+                      "phoneNumber": "111-222-333",
+                      "latitude": 30.12345,
+                      "longitude": -70.98765,
+                      "boatCapacity": 3,
+                      "medicalKit": true,
+                      "available": true
+                    }
                   }
                 }
               }
             }
           },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "`Responder` has been added."
-          },
-          "500" : {
-            "description" : "Returns an `Error` response.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "404": {
+            "description": "Responder Not Found"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/responder/{id}": {
+      "get": {
+        "summary": "Get Responder by Id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Responder Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responder"
+                },
+                "examples": {
+                  "Responder": {
+                    "value": {
+                      "id": "1",
+                      "name": "John Doe",
+                      "phoneNumber": "111-222-333",
+                      "latitude": 30.12345,
+                      "longitude": -70.98765,
+                      "boatCapacity": 3,
+                      "medicalKit": true,
+                      "available": true
+                    }
+                  }
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "Responder" : {
-        "title" : "Root Type for Responder",
-        "description" : "The root of the Responder type's schema.",
-        "required" : [ "boatCapacity", "hasMedical", "lat", "long", "name", "isAvailable", "phoneNumber" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
+  "components": {
+    "schemas": {
+      "Responder": {
+        "title": "Root Type for Responder",
+        "description": "The root of the Responder type's schema.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
           },
-          "name" : {
-            "type" : "string"
+          "name": {
+            "type": "string"
           },
-          "phoneNumber" : {
-            "type" : "string"
+          "phoneNumber": {
+            "type": "string"
           },
-          "lat" : {
-            "type" : "string"
+          "latitude": {
+            "format": "double",
+            "type": "number"
           },
-          "long" : {
-            "type" : "string"
+          "longitude": {
+            "format": "double",
+            "type": "number"
           },
-          "boatCapacity" : {
-            "type" : "integer"
+          "boatCapacity": {
+            "format": "int32",
+            "type": "integer"
           },
-          "hasMedical" : {
-            "type" : "boolean"
+          "medicalKit": {
+            "type": "boolean"
           },
-          "hasMission" : {
-            "type" : "boolean"
-          },
-          "isAvailable" : {
-            "type" : "boolean"
+          "available": {
+            "type": "boolean"
           }
         },
-        "example" : {
-          "id" : "1",
-          "name" : "full name",
-          "phoneNumber" : "555-555-5555",
-          "lat" : "34.16877",
-          "long" : "-77.87045",
-          "boatCapacity" : 10,
-          "hasMedical" : true,
-          "hasMission" : false,
-          "isAvailable" : false
-        }
+        "example": "{\n  \"id\" : \"1\",\n  \"name\": \"John Doe\",\n  \"phoneNumber\": \"111-222-333\",\n  \"latitude\": 30.12345,\n  \"longitude\": -70.98765,\n  \"boatCapacity\": 3,\n  \"medicalKit\": true,\n  \"available\": true\n}"
       },
-      "Error" : {
-        "title" : "Root Type for Error",
-        "description" : "The root of the Error type's schema.",
-        "type" : "object",
-        "properties" : {
-          "code" : {
-            "format" : "int32",
-            "type" : "integer"
-          },
-          "message" : {
-            "type" : "string"
+      "ResponderList": {
+        "title": "Root Type for ResponderList",
+        "description": "The root of the ResponderList type's schema.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "phoneNumber": {
+              "type": "string"
+            },
+            "latitude": {
+              "format": "double",
+              "type": "number"
+            },
+            "longitude": {
+              "format": "double",
+              "type": "number"
+            },
+            "boatCapacity": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "medicalKit": {
+              "type": "boolean"
+            },
+            "available": {
+              "type": "boolean"
+            }
           }
         },
-        "example" : "{\n    \"code\": 1,\n    \"message\": \"Error message\"\n}"
+        "example": [
+          {
+            "id": "1",
+            "name": "John Doe",
+            "phoneNumber": "111-222-333",
+            "latitude": 30.12345,
+            "longitude": -70.98765,
+            "boatCapacity": 3,
+            "medicalKit": true,
+            "available": true
+          },
+          {
+            "id": "2",
+            "name": "Mary Foo",
+            "phoneNumber": "999-888-777",
+            "latitude": 32.989765,
+            "longitude": -71.12345,
+            "boatCapacity": 2,
+            "medicalKit": false,
+            "available": true
+          }
+        ]
       }
     }
   }
