@@ -46,6 +46,41 @@ public class ResponderServiceTest {
     }
 
     @Test
+    public void testFindResponderById() {
+        ResponderEntity found = new ResponderEntity.Builder(1)
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .currentPositionLatitude(new BigDecimal("30.12345"))
+                .currentPositionLongitude(new BigDecimal("-70.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        when(responderDao.findById(any(Long.class))).thenReturn(found);
+
+        Responder responder = service.getResponder(1);
+
+        assertThat(responder, notNullValue());
+        assertThat(responder.getId(), equalTo("1"));
+        assertThat(responder.getName(), equalTo("John Doe"));
+
+        verify(responderDao).findById(eq(1L));
+    }
+
+    @Test
+    public void testFindResponderByIdWhenNotFound() {
+
+        when(responderDao.findById(any(Long.class))).thenReturn(null);
+
+        Responder responder = service.getResponder(1);
+
+        assertThat(responder, nullValue());
+
+        verify(responderDao).findById(eq(1L));
+    }
+
+    @Test
     public void testAvailableResponders() {
 
         ResponderEntity responder1 = new ResponderEntity.Builder(1L)
@@ -241,7 +276,7 @@ public class ResponderServiceTest {
     }
 
     @Test
-    public void testFindByNameNotFound() {
+    public void testFindByNameWhenNotFound() {
 
         when(responderDao.findByName(any(String.class))).thenReturn(null);
 

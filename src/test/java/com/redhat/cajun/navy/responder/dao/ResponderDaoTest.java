@@ -132,6 +132,38 @@ public class ResponderDaoTest {
     }
 
     @Test
+    public void testFindByIdWhenNotFound() {
+
+        responderDao.deleteAll();
+
+        //stop the current transaction
+        TestTransaction.end();
+
+        ResponderEntity responder = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.create(responder);
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            ResponderEntity r = responderDao.findById(responder.getId()+1);
+            assertThat(r, nullValue());
+            return null;
+        });
+    }
+
+    @Test
     public void testUpdateEntity() {
 
         responderDao.deleteAll();

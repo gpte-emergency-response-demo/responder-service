@@ -7,14 +7,12 @@ import javax.sql.DataSource;
 import com.redhat.cajun.navy.responder.dao.ResponderDao;
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
 import com.redhat.cajun.navy.responder.model.Responder;
-import com.redhat.cajun.navy.responder.model.ResponderRowMapper;
 import com.redhat.cajun.navy.responder.model.ResponderStats;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,13 +41,7 @@ public class ResponderService {
     }
 
     public Responder getResponder(long id) {
-        jdbcTemplate = new JdbcTemplate(datasource);
-        String sqlResponderById = "SELECT * from responder WHERE responder_id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sqlResponderById, new Object[]{id}, new ResponderRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+        return toResponder(responderDao.findById(id));
     }
 
     public Responder getResponderByName(String name) {
