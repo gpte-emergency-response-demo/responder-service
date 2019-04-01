@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +46,7 @@ public class ResponderServiceTest {
     @Test
     public void testAvailableResponders() {
 
-        ResponderEntity responder1 = new ResponderEntity.Builder()
+        ResponderEntity responder1 = new ResponderEntity.Builder(1L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
@@ -54,9 +55,8 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .build();
-        setField(responder1, "id", 1, null);
 
-        ResponderEntity responder2 = new ResponderEntity.Builder()
+        ResponderEntity responder2 = new ResponderEntity.Builder(2L)
                 .name("John Foo")
                 .phoneNumber("999-888-777")
                 .currentPositionLatitude(new BigDecimal("35.12345"))
@@ -65,7 +65,6 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .build();
-        setField(responder2, "id", 2, null);
 
         List<ResponderEntity> responderEntities = new ArrayList<>();
         responderEntities.add(responder1);
@@ -109,7 +108,7 @@ public class ResponderServiceTest {
                 .build();
         setField(currentEntity, "id", 1, null);
 
-        ResponderEntity updatedEntity = new ResponderEntity.Builder()
+        ResponderEntity updatedEntity = new ResponderEntity.Builder(1L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
@@ -118,7 +117,6 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(false)
                 .build();
-        setField(updatedEntity, "id", 1, null);
 
         when(responderDao.findById(1L)).thenReturn(currentEntity);
         when(responderDao.merge(any(ResponderEntity.class))).thenReturn(updatedEntity);
@@ -155,7 +153,7 @@ public class ResponderServiceTest {
 
         Responder toUpdate = new Responder.Builder("1").available(false).build();
 
-        ResponderEntity currentEntity = new ResponderEntity.Builder()
+        ResponderEntity currentEntity = new ResponderEntity.Builder(1L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
@@ -164,7 +162,6 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(false)
                 .build();
-        setField(currentEntity, "id", 1, null);
 
         when(responderDao.findById(1L)).thenReturn(currentEntity);
 
@@ -182,6 +179,39 @@ public class ResponderServiceTest {
         assertThat(updated.isAvailable(), equalTo(false));
         verify(responderDao).findById(1L);
         verify(responderDao, never()).merge(any());
+    }
+
+    @Test
+    public void testCreateResponder() {
+
+        Responder toCreate = new Responder.Builder(null)
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .latitude(new BigDecimal("30.12345"))
+                .longitude(new BigDecimal("-70.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        doAnswer(invocation -> {
+            ResponderEntity entity = invocation.getArgument(0);
+            assertThat(entity.getId(), equalTo(0L));
+
+            setField(entity, "id", 100, null);
+
+            return null;
+        }).when(responderDao).create(any(ResponderEntity.class));
+
+        Responder created = service.createResponder(toCreate);
+
+        verify(responderDao).create(entityCaptor.capture());
+        ResponderEntity entity = entityCaptor.getValue();
+        assertThat(entity.getName(), equalTo("John Doe"));
+
+        assertThat(created, notNullValue());
+        assertThat(created.getId(), equalTo("100"));
+        assertThat(created.getName(), equalTo("John Doe"));
     }
 
 }

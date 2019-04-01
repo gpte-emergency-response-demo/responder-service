@@ -8,7 +8,9 @@ import com.redhat.cajun.navy.responder.service.ResponderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,12 +22,12 @@ public class RespondersController {
     @Autowired
     private ResponderService responderService;
 
-    @RequestMapping(value = "/stats", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/stats", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponderStats stats() {
         return responderService.getResponderStats();
     }
 
-    @RequestMapping(value = "/responder/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/responder/{id}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<Responder> responder(@PathVariable long id) {
         Responder responder = responderService.getResponder(id);
         if (responder == null) {
@@ -35,9 +37,16 @@ public class RespondersController {
         }
     }
 
-    @RequestMapping(value = "/available", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/available", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Responder>> activeResponders() {
         return new ResponseEntity<>(responderService.availableResponders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/responder", method = RequestMethod.POST, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity createResponder(@RequestBody Responder responder) {
+
+        responderService.createResponder(responder);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
 }

@@ -67,6 +67,13 @@ public class ResponderService {
                 .collect(Collectors.toList());
     }
 
+    public Responder createResponder(Responder responder) {
+
+        ResponderEntity entity = fromResponder(responder);
+        responderDao.create(entity);
+        return toResponder(entity);
+    }
+
     @Transactional
     public Triple<Boolean, String, Responder> updateResponder(Responder toUpdate) {
 
@@ -113,6 +120,23 @@ public class ResponderService {
             return true;
         }
         return false;
+    }
+
+    private ResponderEntity fromResponder(Responder responder) {
+
+        if (responder == null) {
+            return null;
+        }
+
+        return new ResponderEntity.Builder(responder.getId() == null ? 0 : new Long(responder.getId()))
+                .name(responder.getName())
+                .phoneNumber(responder.getPhoneNumber())
+                .currentPositionLatitude(responder.getLatitude())
+                .currentPositionLongitude(responder.getLongitude())
+                .boatCapacity(responder.getBoatCapacity())
+                .medicalKit(responder.isMedicalKit())
+                .available(responder.isAvailable())
+                .build();
     }
 
     private ResponderEntity fromResponder(Responder responder, ResponderEntity current) {

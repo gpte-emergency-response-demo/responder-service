@@ -1,7 +1,12 @@
 package com.redhat.cajun.navy.responder;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -15,6 +20,8 @@ import com.redhat.cajun.navy.responder.service.ResponderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,6 +50,9 @@ public class ResponderControllerMvcTest {
     @MockBean
     private ResponderCommandMessageListener responderCommandMessageListener;
 
+    @Captor
+    private ArgumentCaptor<Responder> responderCaptor;
+
     @Before
     public void initTest() {
         mockMvc = MockMvcBuilders
@@ -61,6 +71,35 @@ public class ResponderControllerMvcTest {
         result.andExpect(status().isOk());
         result.andExpect(jsonPath("$.length()").value(2));
 
+    }
+
+    @Test
+    public void testCreateResponder() throws Exception {
+
+        String json = "{" +
+                "\"name\" : \"John Doe\"," +
+                "\"phoneNumber\" : \"111-222-333\"," +
+                "\"latitude\" : 30.12345," +
+                "\"longitude\" : -70.98765," +
+                "\"boatCapacity\" : 3," +
+                "\"medicalKit\" : true," +
+                "\"available\": true" +
+                "}";
+
+        final ResultActions result = mockMvc.perform(post("/responders/responder")
+                .contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).content(json));
+
+        result.andExpect(status().isCreated());
+        verify(responderService).createResponder(responderCaptor.capture());
+        Responder responder = responderCaptor.getValue();
+        assertThat(responder, notNullValue());
+        assertThat(responder.getName(), equalTo("John Doe"));
+        assertThat(responder.getPhoneNumber(), equalTo("111-222-333"));
+        assertThat(responder.getLatitude(), equalTo(new BigDecimal("30.12345")));
+        assertThat(responder.getLongitude(), equalTo(new BigDecimal("-70.98765")));
+        assertThat(responder.getBoatCapacity(), equalTo(3));
+        assertThat(responder.isMedicalKit(), equalTo(true));
+        assertThat(responder.isAvailable(), equalTo(true));
     }
 
     private void initService() {

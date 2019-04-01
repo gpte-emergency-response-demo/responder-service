@@ -1,7 +1,11 @@
 package com.redhat.cajun.navy.responder;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -17,6 +21,8 @@ import io.restassured.http.ContentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
@@ -25,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.MimeTypeUtils;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -45,6 +52,9 @@ public class ResponderControllerIT {
     @MockBean
     private ResponderDao rideDao;
 
+    @Captor
+    private ArgumentCaptor<Responder> responderCaptor;
+
     @Before
     public void initTest() {
         RestAssured.baseURI = String.format("http://localhost:%d", port);
@@ -60,6 +70,37 @@ public class ResponderControllerIT {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("size()", is(2));
+
+    }
+
+    @Test
+    public void testCreateResponder() {
+
+        String json = "{" +
+                "\"name\" : \"John Doe\"," +
+                "\"phoneNumber\" : \"111-222-333\"," +
+                "\"latitude\" : 30.12345," +
+                "\"longitude\" : -70.98765," +
+                "\"boatCapacity\" : 3," +
+                "\"medicalKit\" : true," +
+                "\"available\": true" +
+                "}";
+
+        given().request().contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).body(json).post("/responders/responder")
+                .then()
+                .assertThat()
+                .statusCode(201);
+
+        verify(responderService).createResponder(responderCaptor.capture());
+        Responder responder = responderCaptor.getValue();
+        assertThat(responder, notNullValue());
+        assertThat(responder.getName(), equalTo("John Doe"));
+        assertThat(responder.getPhoneNumber(), equalTo("111-222-333"));
+        assertThat(responder.getLatitude(), equalTo(new BigDecimal("30.12345")));
+        assertThat(responder.getLongitude(), equalTo(new BigDecimal("-70.98765")));
+        assertThat(responder.getBoatCapacity(), equalTo(3));
+        assertThat(responder.isMedicalKit(), equalTo(true));
+        assertThat(responder.isAvailable(), equalTo(true));
 
     }
 
