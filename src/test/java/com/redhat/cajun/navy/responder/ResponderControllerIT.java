@@ -5,10 +5,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -58,11 +61,12 @@ public class ResponderControllerIT {
     @Before
     public void initTest() {
         RestAssured.baseURI = String.format("http://localhost:%d", port);
-        initService();
     }
 
     @Test
     public void testAvailableResponders() {
+
+        initService();
 
         given().request().get("/responders/available")
                 .then()
@@ -101,7 +105,42 @@ public class ResponderControllerIT {
         assertThat(responder.getBoatCapacity(), equalTo(3));
         assertThat(responder.isMedicalKit(), equalTo(true));
         assertThat(responder.isAvailable(), equalTo(true));
+    }
 
+    @Test
+    public void testFindByName() {
+
+        Responder responder = new Responder.Builder("1")
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .latitude(new BigDecimal("30.12345"))
+                .longitude(new BigDecimal("-70.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        when(responderService.getResponderByName(any(String.class))).thenReturn(responder);
+
+        URI url = UriComponentsBuilder.fromUriString("/responders/responder/name").pathSegment("John Doe").build().encode().toUri();
+        given().request().get(url.toASCIIString())
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("name", equalTo("John Doe"));
+    }
+
+    @Test
+    public void testFindByNameWhenNotFound() {
+
+        when(responderService.getResponderByName(any(String.class))).thenReturn(null);
+
+        URI url = UriComponentsBuilder.fromUriString("/responders/responder/name").pathSegment("John Doe").build().encode().toUri();
+        given().request().get(url.toASCIIString())
+                .then()
+                .assertThat()
+                .statusCode(404);
     }
 
     private void initService() {

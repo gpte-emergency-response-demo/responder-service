@@ -3,6 +3,7 @@ package com.redhat.cajun.navy.responder.dao;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -26,6 +27,20 @@ public class ResponderDao {
 
     public ResponderEntity findById(long id) {
         return entityManager.find(ResponderEntity.class, id, LockModeType.OPTIMISTIC);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ResponderEntity findByName(String name) {
+        Query q = entityManager.createQuery("SELECT r FROM ResponderEntity r WHERE r.name = :name");
+        q.setParameter("name", name);
+        List<ResponderEntity> results = q.getResultList();
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() == 1) {
+            return results.get(0);
+        } else {
+            throw new NonUniqueResultException("Found several Responders with name '" + name + "'");
+        }
     }
 
     public ResponderEntity merge(ResponderEntity responder) {

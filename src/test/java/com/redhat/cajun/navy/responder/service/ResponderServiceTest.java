@@ -3,7 +3,9 @@ package com.redhat.cajun.navy.responder.service;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
@@ -212,6 +214,42 @@ public class ResponderServiceTest {
         assertThat(created, notNullValue());
         assertThat(created.getId(), equalTo("100"));
         assertThat(created.getName(), equalTo("John Doe"));
+    }
+
+    @Test
+    public void testFindByName() {
+
+        ResponderEntity found = new ResponderEntity.Builder(1)
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .currentPositionLatitude(new BigDecimal("30.12345"))
+                .currentPositionLongitude(new BigDecimal("-70.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        when(responderDao.findByName(any(String.class))).thenReturn(found);
+
+        Responder responder = service.getResponderByName("John Doe");
+
+        assertThat(responder, notNullValue());
+        assertThat(responder.getId(), equalTo("1"));
+        assertThat(responder.getName(), equalTo("John Doe"));
+
+        verify(responderDao).findByName(eq("John Doe"));
+    }
+
+    @Test
+    public void testFindByNameNotFound() {
+
+        when(responderDao.findByName(any(String.class))).thenReturn(null);
+
+        Responder responder = service.getResponderByName("John Doe");
+
+        assertThat(responder, nullValue());
+
+        verify(responderDao).findByName(eq("John Doe"));
     }
 
 }

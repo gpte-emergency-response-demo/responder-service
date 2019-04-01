@@ -52,6 +52,10 @@ public class ResponderService {
         }
     }
 
+    public Responder getResponderByName(String name) {
+        return toResponder(responderDao.findByName(name));
+    }
+
     @Transactional
     public List<Responder> availableResponders() {
 

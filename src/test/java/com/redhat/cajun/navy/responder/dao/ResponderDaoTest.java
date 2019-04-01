@@ -5,12 +5,14 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.OptimisticLockException;
 
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
@@ -99,6 +101,8 @@ public class ResponderDaoTest {
     @Test
     public void testFindById() {
 
+        responderDao.deleteAll();
+
         //stop the current transaction
         TestTransaction.end();
 
@@ -129,6 +133,8 @@ public class ResponderDaoTest {
 
     @Test
     public void testUpdateEntity() {
+
+        responderDao.deleteAll();
 
         //stop the current transaction
         TestTransaction.end();
@@ -170,6 +176,8 @@ public class ResponderDaoTest {
 
     @Test
     public void testOptimisticLocking() throws Exception {
+
+        responderDao.deleteAll();
 
         //stop the current transaction
         TestTransaction.end();
@@ -240,6 +248,118 @@ public class ResponderDaoTest {
             ResponderEntity r = responderDao.findById(responder.getId());
             assertThat(r.isAvailable(), equalTo(false));
             assertThat(r.getCurrentPositionLatitude(), equalTo(new BigDecimal("30.12345")));
+            return null;
+        });
+    }
+
+    @Test
+    public void testFindByName() {
+
+        responderDao.deleteAll();
+
+        //stop the current transaction
+        TestTransaction.end();
+
+        ResponderEntity responder = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.create(responder);
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            ResponderEntity r = responderDao.findByName("John Foo");
+            assertThat(r, notNullValue());
+            assertThat(r.getName(), equalTo(responder.getName()));
+            return null;
+        });
+    }
+
+    @Test
+    public void testFindByNameWhenNotFound() {
+
+        responderDao.deleteAll();
+
+        //stop the current transaction
+        TestTransaction.end();
+
+        ResponderEntity responder = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.create(responder);
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            ResponderEntity r = responderDao.findByName("John Doe");
+            assertThat(r, nullValue());
+            return null;
+        });
+    }
+
+    @Test
+    public void testFindByNameWhenNotMultipleResults() {
+
+        responderDao.deleteAll();
+
+        //stop the current transaction
+        TestTransaction.end();
+
+        ResponderEntity responder = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        ResponderEntity responder2 = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .build();
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.create(responder);
+            responderDao.create(responder2);
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            try {
+                responderDao.findByName("John Foo");
+                Assert.fail();
+            } catch (NonUniqueResultException e) {
+                // expected exception
+            }
             return null;
         });
     }

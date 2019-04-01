@@ -37,6 +37,16 @@ public class RespondersController {
         }
     }
 
+    @RequestMapping(value = "/responder/name/{name}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Responder> responderByName(@PathVariable String name) {
+        Responder responder = responderService.getResponderByName(name);
+        if (responder == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(responder, HttpStatus.OK);
+        }
+    }
+
     @RequestMapping(value = "/available", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Responder>> activeResponders() {
         return new ResponseEntity<>(responderService.availableResponders(), HttpStatus.OK);
