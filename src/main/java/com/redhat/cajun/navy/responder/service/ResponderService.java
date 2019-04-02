@@ -40,10 +40,12 @@ public class ResponderService {
         return stats;
     }
 
+    @Transactional
     public Responder getResponder(long id) {
         return toResponder(responderDao.findById(id));
     }
 
+    @Transactional
     public Responder getResponderByName(String name) {
         return toResponder(responderDao.findByName(name));
     }
@@ -63,6 +65,7 @@ public class ResponderService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Responder createResponder(Responder responder) {
 
         ResponderEntity entity = fromResponder(responder);
