@@ -90,7 +90,7 @@ public class ResponderService {
             ResponderEntity merged = responderDao.merge(toUpdateEntity);
             return new ImmutableTriple<>(true, "Responder updated", toResponder(merged));
         } catch (Exception e) {
-            log.info("Exception '" + e.getClass() + "' when updating Responder with id '" + toUpdate.getId() + "'. Responder record is not updated.");
+            log.warn("Exception '" + e.getClass() + "' when updating Responder with id '" + toUpdate.getId() + "'. Responder record is not updated.");
             return new ImmutableTriple<>(false, "Exception '" + e.getClass() + "' when updating Responder", toResponder(current));
         }
     }
