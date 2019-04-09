@@ -92,9 +92,10 @@ public class ResponderEntity {
             this.responder = new ResponderEntity();
         }
 
-        public Builder(long id) {
+        public Builder(long id, long version) {
             this.responder = new ResponderEntity();
             responder.id = id;
+            responder.version = version;
         }
 
         public Builder(ResponderEntity r) {

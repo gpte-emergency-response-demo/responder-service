@@ -127,7 +127,7 @@ public class ResponderService {
             return null;
         }
 
-        return new ResponderEntity.Builder(responder.getId() == null ? 0 : new Long(responder.getId()))
+        return new ResponderEntity.Builder(responder.getId() == null ? 0 : new Long(responder.getId()), 0L)
                 .name(responder.getName())
                 .phoneNumber(responder.getPhoneNumber())
                 .currentPositionLatitude(responder.getLatitude())
@@ -144,7 +144,7 @@ public class ResponderService {
             return null;
         }
 
-        return new ResponderEntity.Builder(new Long(responder.getId()))
+        return new ResponderEntity.Builder(new Long(responder.getId()), current.getVersion())
                 .name(responder.getName() == null ? current.getName() : responder.getName())
                 .phoneNumber(responder.getPhoneNumber() == null ? current.getPhoneNumber() : responder.getPhoneNumber())
                 .currentPositionLatitude(responder.getLatitude() == null ? current.getCurrentPositionLatitude() : responder.getLatitude())

@@ -47,7 +47,7 @@ public class ResponderServiceTest {
 
     @Test
     public void testFindResponderById() {
-        ResponderEntity found = new ResponderEntity.Builder(1)
+        ResponderEntity found = new ResponderEntity.Builder(1L, 0L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
@@ -83,7 +83,7 @@ public class ResponderServiceTest {
     @Test
     public void testAvailableResponders() {
 
-        ResponderEntity responder1 = new ResponderEntity.Builder(1L)
+        ResponderEntity responder1 = new ResponderEntity.Builder(1L, 0L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
@@ -93,7 +93,7 @@ public class ResponderServiceTest {
                 .available(true)
                 .build();
 
-        ResponderEntity responder2 = new ResponderEntity.Builder(2L)
+        ResponderEntity responder2 = new ResponderEntity.Builder(2L, 0L)
                 .name("John Foo")
                 .phoneNumber("999-888-777")
                 .currentPositionLatitude(new BigDecimal("35.12345"))
@@ -145,7 +145,7 @@ public class ResponderServiceTest {
                 .build();
         setField(currentEntity, "id", 1, null);
 
-        ResponderEntity updatedEntity = new ResponderEntity.Builder(1L)
+        ResponderEntity updatedEntity = new ResponderEntity.Builder(1L, 0L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
@@ -190,7 +190,7 @@ public class ResponderServiceTest {
 
         Responder toUpdate = new Responder.Builder("1").available(false).build();
 
-        ResponderEntity currentEntity = new ResponderEntity.Builder(1L)
+        ResponderEntity currentEntity = new ResponderEntity.Builder(1L, 0L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
@@ -254,7 +254,7 @@ public class ResponderServiceTest {
     @Test
     public void testFindByName() {
 
-        ResponderEntity found = new ResponderEntity.Builder(1)
+        ResponderEntity found = new ResponderEntity.Builder(1L, 0L)
                 .name("John Doe")
                 .phoneNumber("111-222-333")
                 .currentPositionLatitude(new BigDecimal("30.12345"))
