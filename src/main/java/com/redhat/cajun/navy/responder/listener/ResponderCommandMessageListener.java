@@ -58,19 +58,21 @@ public class ResponderCommandMessageListener {
             log.debug("Processing '" + UPDATE_RESPONDER_COMMAND + "' message for responder '" + responder.getId() + "'");
 
             Triple<Boolean, String, Responder> result = responderService.updateResponder(responder);
-            String status = (result.getLeft() ? "success" : "error");
-            ResponderUpdatedEvent event = new ResponderUpdatedEvent.Builder(status, result.getRight())
-                    .statusMessage(result.getMiddle()).build();
-            Message eventMessage = new Message.Builder<>("ResponderUpdatedEvent",
-                    "ResponderService", event)
-                    .header("incidentId", message.getHeaderValue("incidentId"))
-                    .build();
 
-            ListenableFuture<SendResult<String, Message<?>>> future = kafkaTemplate.send(destination, responder.getId(), eventMessage);
-            future.addCallback(
-                    res -> log.debug("Sent 'ResponderUpdatedEvent' message for responder " + responder.getId()),
-                    ex -> log.error("Error sending 'IncidentReportedEvent' message for incident " + responder.getId(), ex));
-
+            // Only send a responder updated event message if there is a 'incidentId' header in the incoming message
+            if (message.getHeaderValue("incidentId") != null) {
+                String status = (result.getLeft() ? "success" : "error");
+                ResponderUpdatedEvent event = new ResponderUpdatedEvent.Builder(status, result.getRight())
+                        .statusMessage(result.getMiddle()).build();
+                Message eventMessage = new Message.Builder<>("ResponderUpdatedEvent",
+                        "ResponderService", event)
+                        .header("incidentId", message.getHeaderValue("incidentId"))
+                        .build();
+                ListenableFuture<SendResult<String, Message<?>>> future = kafkaTemplate.send(destination, responder.getId(), eventMessage);
+                future.addCallback(
+                        res -> log.debug("Sent 'ResponderUpdatedEvent' message for responder " + responder.getId()),
+                        ex -> log.error("Error sending 'IncidentReportedEvent' message for incident " + responder.getId(), ex));
+            }
 
         } catch (Exception e) {
             log.error("Error processing msg " + messageAsJson, e);

@@ -59,7 +59,7 @@ public class ResponderCommandMessageListenerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testProcessMessageUpdateAvailability() {
+    public void testProcessMessageUpdateResponder() {
 
         String json = "{\"messageType\" : \"UpdateResponderCommand\"," +
                 "\"id\" : \"messageId\"," +
@@ -112,6 +112,50 @@ public class ResponderCommandMessageListenerTest {
         assertThat(event.getResponder(), equalTo(updated));
         assertThat(event.getStatus(), equalTo("success"));
         assertThat(event.getStatusMessage(), equalTo("ok"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testProcessMessageUpdateResponderNoIncidentIdHeader() {
+
+        String json = "{\"messageType\" : \"UpdateResponderCommand\"," +
+                "\"id\" : \"messageId\"," +
+                "\"invokingService\" : \"messageSender\"," +
+                "\"timestamp\" : 1521148332397," +
+                "\"body\" : {" +
+                "\"responder\" : {" +
+                "\"id\" : \"1\"," +
+                "\"available\" : false" +
+                "} " +
+                "} " +
+                "}";
+
+        Responder updated = new Responder.Builder("1")
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .longitude(new BigDecimal("30.12345"))
+                .latitude(new BigDecimal("-77.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(false)
+                .build();
+        when(responderService.updateResponder(any(Responder.class))).thenReturn(new ImmutableTriple<>(true, "ok", updated));
+
+        messageListener.processMessage(json);
+
+        verify(responderService).updateResponder(responderCaptor.capture());
+        Responder captured = responderCaptor.getValue();
+        assertThat(captured, notNullValue());
+        assertThat(captured.getId(), equalTo("1"));
+        assertThat(captured.isAvailable(), equalTo(false));
+        assertThat(captured.getName(), nullValue());
+        assertThat(captured.getPhoneNumber(), nullValue());
+        assertThat(captured.getLatitude(), nullValue());
+        assertThat(captured.getLongitude(), nullValue());
+        assertThat(captured.getBoatCapacity(), nullValue());
+        assertThat(captured.isMedicalKit(), nullValue());
+
+        verify(kafkaTemplate, never()).send(anyString(), anyString(), any(Message.class));
     }
 
     @Test
