@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.util.concurrent.ListenableFuture;
 
 public class ResponderCommandMessageListenerTest {
@@ -36,6 +37,9 @@ public class ResponderCommandMessageListenerTest {
 
     @Mock
     private KafkaTemplate kafkaTemplate;
+
+    @Mock
+    private Acknowledgment ack;
 
     @Captor
     private ArgumentCaptor<Responder> responderCaptor;
@@ -87,7 +91,7 @@ public class ResponderCommandMessageListenerTest {
                 .build();
         when(responderService.updateResponder(any(Responder.class))).thenReturn(new ImmutableTriple<>(true, "ok", updated));
 
-        messageListener.processMessage(json);
+        messageListener.processMessage(json,"key", "topic", 1, ack);
 
         verify(responderService).updateResponder(responderCaptor.capture());
         Responder captured = responderCaptor.getValue();
@@ -112,6 +116,7 @@ public class ResponderCommandMessageListenerTest {
         assertThat(event.getResponder(), equalTo(updated));
         assertThat(event.getStatus(), equalTo("success"));
         assertThat(event.getStatusMessage(), equalTo("ok"));
+        verify(ack).acknowledge();
     }
 
     @Test
@@ -141,7 +146,7 @@ public class ResponderCommandMessageListenerTest {
                 .build();
         when(responderService.updateResponder(any(Responder.class))).thenReturn(new ImmutableTriple<>(true, "ok", updated));
 
-        messageListener.processMessage(json);
+        messageListener.processMessage(json,"key", "topic", 1, ack);
 
         verify(responderService).updateResponder(responderCaptor.capture());
         Responder captured = responderCaptor.getValue();
@@ -156,6 +161,7 @@ public class ResponderCommandMessageListenerTest {
         assertThat(captured.isMedicalKit(), nullValue());
 
         verify(kafkaTemplate, never()).send(anyString(), anyString(), any(Message.class));
+        verify(ack).acknowledge();
     }
 
     @Test
@@ -168,9 +174,10 @@ public class ResponderCommandMessageListenerTest {
                 "\"body\":{} " +
                 "}";
 
-        messageListener.processMessage(json);
+        messageListener.processMessage(json,"key", "topic", 1, ack);
 
         verify(responderService, never()).updateResponder(any(Responder.class));
+        verify(ack).acknowledge();
     }
 
     @Test
@@ -178,9 +185,10 @@ public class ResponderCommandMessageListenerTest {
         String json = "{\"field1\":\"value1\"," +
                 "\"field2\":\"value2\"}";
 
-        messageListener.processMessage(json);
+        messageListener.processMessage(json,"key", "topic", 1, ack);
 
         verify(responderService, never()).updateResponder(any(Responder.class));
+        verify(ack).acknowledge();
     }
 
 }

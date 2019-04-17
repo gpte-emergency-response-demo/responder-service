@@ -18,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -41,21 +44,22 @@ public class ResponderCommandMessageListener {
     private String destination;
 
     @KafkaListener(topics = "${listener.destination.update-responder-command}")
-    public void processMessage(@Payload String messageAsJson) {
+    public void processMessage(@Payload String messageAsJson, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                               @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                               @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition, Acknowledgment ack) {
 
-        acceptMessageType(messageAsJson).ifPresent(m -> {
-            processUpdateResponderCommand(messageAsJson);
-        });
+        acceptMessageType(messageAsJson, ack).ifPresent(m -> processUpdateResponderCommand(messageAsJson, key, topic, partition, ack));
     }
 
-    private void processUpdateResponderCommand(String messageAsJson) {
+    private void processUpdateResponderCommand(String messageAsJson, String key, String topic, int partition, Acknowledgment ack) {
 
         Message<UpdateResponderCommand> message;
         try {
             message = new ObjectMapper().readValue(messageAsJson, new TypeReference<Message<UpdateResponderCommand>>() {});
             Responder responder = message.getBody().getResponder();
 
-            log.debug("Processing '" + UPDATE_RESPONDER_COMMAND + "' message for responder '" + responder.getId() + "'");
+            log.debug("Processing '" + UPDATE_RESPONDER_COMMAND + "' message for responder '" + responder.getId()
+                    + "' with key " + key + "from topic:partition " + topic + ":" + partition);
 
             Triple<Boolean, String, Responder> result = responderService.updateResponder(responder);
 
@@ -73,14 +77,15 @@ public class ResponderCommandMessageListener {
                         res -> log.debug("Sent 'ResponderUpdatedEvent' message for responder " + responder.getId()),
                         ex -> log.error("Error sending 'IncidentReportedEvent' message for incident " + responder.getId(), ex));
             }
-
+            ack.acknowledge();
         } catch (Exception e) {
             log.error("Error processing msg " + messageAsJson, e);
             throw new IllegalStateException(e.getMessage(), e);
         }
+
     }
 
-    private Optional<String> acceptMessageType(String messageAsJson) {
+    private Optional<String> acceptMessageType(String messageAsJson, Acknowledgment ack) {
         try {
             String messageType = JsonPath.read(messageAsJson, "$.messageType");
             if (Arrays.asList(ACCEPTED_MESSAGE_TYPES).contains(messageType)) {
@@ -90,6 +95,7 @@ public class ResponderCommandMessageListener {
         } catch (Exception e) {
             log.warn("Unexpected message without 'messageType' field.");
         }
+        ack.acknowledge();
         return Optional.empty();
     }
 
