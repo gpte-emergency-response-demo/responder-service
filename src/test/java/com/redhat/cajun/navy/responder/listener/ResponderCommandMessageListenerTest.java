@@ -91,7 +91,7 @@ public class ResponderCommandMessageListenerTest {
                 .build();
         when(responderService.updateResponder(any(Responder.class))).thenReturn(new ImmutableTriple<>(true, "ok", updated));
 
-        messageListener.processMessage(json,"key", "topic", 1, ack);
+        messageListener.processMessage(json,"topic", 1, ack);
 
         verify(responderService).updateResponder(responderCaptor.capture());
         Responder captured = responderCaptor.getValue();
@@ -146,7 +146,7 @@ public class ResponderCommandMessageListenerTest {
                 .build();
         when(responderService.updateResponder(any(Responder.class))).thenReturn(new ImmutableTriple<>(true, "ok", updated));
 
-        messageListener.processMessage(json,"key", "topic", 1, ack);
+        messageListener.processMessage(json,"topic", 1, ack);
 
         verify(responderService).updateResponder(responderCaptor.capture());
         Responder captured = responderCaptor.getValue();
@@ -174,7 +174,7 @@ public class ResponderCommandMessageListenerTest {
                 "\"body\":{} " +
                 "}";
 
-        messageListener.processMessage(json,"key", "topic", 1, ack);
+        messageListener.processMessage(json,"topic", 1, ack);
 
         verify(responderService, never()).updateResponder(any(Responder.class));
         verify(ack).acknowledge();
@@ -185,7 +185,7 @@ public class ResponderCommandMessageListenerTest {
         String json = "{\"field1\":\"value1\"," +
                 "\"field2\":\"value2\"}";
 
-        messageListener.processMessage(json,"key", "topic", 1, ack);
+        messageListener.processMessage(json,"topic", 1, ack);
 
         verify(responderService, never()).updateResponder(any(Responder.class));
         verify(ack).acknowledge();

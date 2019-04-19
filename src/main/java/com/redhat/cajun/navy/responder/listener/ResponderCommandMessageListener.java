@@ -44,14 +44,14 @@ public class ResponderCommandMessageListener {
     private String destination;
 
     @KafkaListener(topics = "${listener.destination.update-responder-command}")
-    public void processMessage(@Payload String messageAsJson, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+    public void processMessage(@Payload String messageAsJson,
                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition, Acknowledgment ack) {
 
-        acceptMessageType(messageAsJson, ack).ifPresent(m -> processUpdateResponderCommand(messageAsJson, key, topic, partition, ack));
+        acceptMessageType(messageAsJson, ack).ifPresent(m -> processUpdateResponderCommand(messageAsJson, topic, partition, ack));
     }
 
-    private void processUpdateResponderCommand(String messageAsJson, String key, String topic, int partition, Acknowledgment ack) {
+    private void processUpdateResponderCommand(String messageAsJson, String topic, int partition, Acknowledgment ack) {
 
         Message<UpdateResponderCommand> message;
         try {
@@ -59,7 +59,7 @@ public class ResponderCommandMessageListener {
             Responder responder = message.getBody().getResponder();
 
             log.debug("Processing '" + UPDATE_RESPONDER_COMMAND + "' message for responder '" + responder.getId()
-                    + "' with key " + key + "from topic:partition " + topic + ":" + partition);
+                    + "' from topic:partition " + topic + ":" + partition);
 
             Triple<Boolean, String, Responder> result = responderService.updateResponder(responder);
 
