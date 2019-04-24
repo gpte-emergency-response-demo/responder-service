@@ -55,6 +55,7 @@ public class ResponderServiceTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
                 .build();
 
         when(responderDao.findById(any(Long.class))).thenReturn(found);
@@ -91,6 +92,7 @@ public class ResponderServiceTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
                 .build();
 
         ResponderEntity responder2 = new ResponderEntity.Builder(2L, 0L)
@@ -101,6 +103,7 @@ public class ResponderServiceTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
                 .build();
 
         List<ResponderEntity> responderEntities = new ArrayList<>();
@@ -127,6 +130,7 @@ public class ResponderServiceTest {
         assertThat(responder.getBoatCapacity(), equalTo(matched.getBoatCapacity()));
         assertThat(responder.isMedicalKit(),equalTo(matched.getMedicalKit()));
         assertThat(responder.isAvailable(), equalTo(matched.isAvailable()));
+
     }
 
     @Test
@@ -142,6 +146,7 @@ public class ResponderServiceTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
                 .build();
         setField(currentEntity, "id", 1, null);
 
@@ -153,6 +158,7 @@ public class ResponderServiceTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(false)
+                .person(false)
                 .build();
 
         when(responderDao.findById(1L)).thenReturn(currentEntity);
@@ -198,6 +204,7 @@ public class ResponderServiceTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(false)
+                .person(true)
                 .build();
 
         when(responderDao.findById(1L)).thenReturn(currentEntity);
@@ -214,6 +221,7 @@ public class ResponderServiceTest {
         assertThat(updated.getBoatCapacity(), equalTo(3));
         assertThat(updated.isMedicalKit(), equalTo(true));
         assertThat(updated.isAvailable(), equalTo(false));
+        assertThat(updated.isPerson(), equalTo(true));
         verify(responderDao).findById(1L);
         verify(responderDao, never()).merge(any());
     }
@@ -229,6 +237,7 @@ public class ResponderServiceTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
                 .build();
 
         doAnswer(invocation -> {
@@ -262,6 +271,7 @@ public class ResponderServiceTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
                 .build();
 
         when(responderDao.findByName(any(String.class))).thenReturn(found);
