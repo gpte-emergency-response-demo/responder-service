@@ -1,7 +1,5 @@
 package com.redhat.cajun.navy.responder.model;
 
-import com.redhat.cajun.navy.responder.entity.ResponderEntity;
-
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -109,7 +107,6 @@ public class Responder {
             responder.person = person;
             return this;
         }
-
 
         public Responder build() {
             return responder;

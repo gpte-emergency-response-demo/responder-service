@@ -47,8 +47,6 @@ public class ResponderEntity {
     @Column(name = "person")
     private Boolean person;
 
-
-
     @Column(name = "version")
     @Version
     private long version;
