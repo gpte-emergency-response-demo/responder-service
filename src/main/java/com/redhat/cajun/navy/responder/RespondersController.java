@@ -59,4 +59,9 @@ public class RespondersController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/responder", method = RequestMethod.PUT, consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateResponder(@RequestBody Responder responder) {
+        responderService.updateResponder(responder);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

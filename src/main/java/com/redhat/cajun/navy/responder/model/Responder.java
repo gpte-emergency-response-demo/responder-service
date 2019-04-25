@@ -21,6 +21,8 @@ public class Responder {
 
     private Boolean available;
 
+    private Boolean person;
+
     public String getId() {
         return id;
     }
@@ -51,6 +53,10 @@ public class Responder {
 
     public Boolean isAvailable() {
         return available;
+    }
+
+    public Boolean isPerson() {
+        return person;
     }
 
     public static class Builder {
@@ -94,6 +100,11 @@ public class Responder {
 
         public Builder available(Boolean available) {
             responder.available = available;
+            return this;
+        }
+
+        public Builder person(boolean person) {
+            responder.person = person;
             return this;
         }
 
