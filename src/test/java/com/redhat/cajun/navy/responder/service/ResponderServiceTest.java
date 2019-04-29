@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -16,6 +17,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.redhat.cajun.navy.responder.dao.ResponderDao;
@@ -415,6 +417,72 @@ public class ResponderServiceTest {
         assertThat(responder, nullValue());
 
         verify(responderDao).findByName(eq("John Doe"));
+    }
+
+    @Test
+    public void testUpdateCoordinates() {
+
+        Responder toUpdate1 = new Responder.Builder("1").latitude(new BigDecimal("30.12345")).longitude(new BigDecimal("-77.98765")).build();
+        Responder toUpdate2 = new Responder.Builder("2").latitude(new BigDecimal("31.12345")).longitude(new BigDecimal("-78.98765")).build();
+        List<Responder> toUpdateList = Arrays.asList(toUpdate1, toUpdate2);
+
+        ResponderEntity currentEntity1 = new ResponderEntity.Builder()
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .currentPositionLatitude(new BigDecimal("32.12345"))
+                .currentPositionLongitude(new BigDecimal("-79.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(true)
+                .person(false)
+                .enrolled(true)
+                .build();
+        setField(currentEntity1, "id", 1, null);
+
+        ResponderEntity currentEntity2 = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("111-222-333")
+                .currentPositionLatitude(new BigDecimal("33.12345"))
+                .currentPositionLongitude(new BigDecimal("-80.98765"))
+                .boatCapacity(4)
+                .medicalKit(true)
+                .available(true)
+                .person(false)
+                .enrolled(true)
+                .build();
+        setField(currentEntity2, "id", 2, null);
+
+        when(responderDao.findById(1L)).thenReturn(currentEntity1);
+        when(responderDao.findById(2L)).thenReturn(currentEntity2);
+
+        service.update(toUpdateList);
+
+        verify(responderDao, times(2)).findById(any(Long.class));
+        verify(responderDao, times(2)).merge(entityCaptor.capture());
+        List<ResponderEntity> captured = entityCaptor.getAllValues();
+        ResponderEntity entity1 = captured.get(0);
+        assertThat(entity1.getId(), equalTo(1L));
+        assertThat(entity1.getName(), equalTo("John Doe"));
+        assertThat(entity1.getPhoneNumber(), equalTo("111-222-333"));
+        assertThat(entity1.getCurrentPositionLatitude(), equalTo(new BigDecimal("30.12345")));
+        assertThat(entity1.getCurrentPositionLongitude(), equalTo(new BigDecimal("-77.98765")));
+        assertThat(entity1.getBoatCapacity(), equalTo(3));
+        assertThat(entity1.getMedicalKit(), equalTo(true));
+        assertThat(entity1.isAvailable(), equalTo(true));
+        assertThat(entity1.isPerson(), equalTo(false));
+        assertThat(entity1.isEnrolled(), equalTo(true));
+
+        ResponderEntity entity2 = captured.get(1);
+        assertThat(entity2.getId(), equalTo(2L));
+        assertThat(entity2.getName(), equalTo("John Foo"));
+        assertThat(entity2.getPhoneNumber(), equalTo("111-222-333"));
+        assertThat(entity2.getCurrentPositionLatitude(), equalTo(new BigDecimal("31.12345")));
+        assertThat(entity2.getCurrentPositionLongitude(), equalTo(new BigDecimal("-78.98765")));
+        assertThat(entity2.getBoatCapacity(), equalTo(4));
+        assertThat(entity2.getMedicalKit(), equalTo(true));
+        assertThat(entity2.isAvailable(), equalTo(true));
+        assertThat(entity2.isPerson(), equalTo(false));
+        assertThat(entity2.isEnrolled(), equalTo(true));
     }
 
 }

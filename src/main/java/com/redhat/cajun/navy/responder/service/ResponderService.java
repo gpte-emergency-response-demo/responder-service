@@ -8,6 +8,7 @@ import com.redhat.cajun.navy.responder.dao.ResponderDao;
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
 import com.redhat.cajun.navy.responder.model.Responder;
 import com.redhat.cajun.navy.responder.model.ResponderStats;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
@@ -95,6 +96,24 @@ public class ResponderService {
             log.warn("Exception '" + e.getClass() + "' when updating Responder with id '" + toUpdate.getId() + "'. Responder record is not updated.");
             return new ImmutableTriple<>(false, "Exception '" + e.getClass() + "' when updating Responder", toResponder(current));
         }
+    }
+
+    @Transactional
+    public void reset() {
+        responderDao.reset();
+    }
+
+    @Transactional
+    public void update(List<Responder> responders) {
+        responders.stream().map(r -> new ImmutablePair<>(r, responderDao.findById(new Long(r.getId()))))
+                .filter(p -> p.getRight() != null)
+            .map(p -> fromResponder(p.getLeft(), p.getRight()))
+            .forEach(e -> responderDao.merge(e));
+    }
+
+    @Transactional
+    public void init() {
+        responderDao.init();
     }
 
     private boolean stateChanged(ResponderEntity current, ResponderEntity updated) {
