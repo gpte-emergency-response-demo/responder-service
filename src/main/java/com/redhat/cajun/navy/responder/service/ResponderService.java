@@ -62,6 +62,7 @@ public class ResponderService {
                 .medicalKit(responderEntity.getMedicalKit())
                 .available(responderEntity.isAvailable())
                 .person(responderEntity.isPerson())
+                .enrolled(responderEntity.isEnrolled())
                 .build())
                 .collect(Collectors.toList());
     }
@@ -120,6 +121,9 @@ public class ResponderService {
             return true;
         }
         if (updated.isPerson() != null && !updated.isPerson().equals(current.isPerson())) {
+            return true;
+        }
+        if (updated.isEnrolled() != null && !updated.isEnrolled().equals(current.isEnrolled())) {
             return true;
         }
         return false;

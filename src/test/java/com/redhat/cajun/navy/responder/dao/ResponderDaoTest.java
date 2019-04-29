@@ -56,6 +56,7 @@ public class ResponderDaoTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         responderDao.create(responder);
@@ -77,6 +78,7 @@ public class ResponderDaoTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(false)
+                .enrolled(false)
                 .build();
 
         ResponderEntity responder2 = new ResponderEntity.Builder()
@@ -87,6 +89,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         responderDao.create(responder1);
@@ -114,6 +117,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         TransactionTemplate template = new TransactionTemplate(transactionManager);
@@ -147,6 +151,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         TransactionTemplate template = new TransactionTemplate(transactionManager);
@@ -179,6 +184,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         TransactionTemplate template = new TransactionTemplate(transactionManager);
@@ -225,6 +231,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         TransactionTemplate template = new TransactionTemplate(transactionManager);
@@ -300,6 +307,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         TransactionTemplate template = new TransactionTemplate(transactionManager);
@@ -333,6 +341,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         TransactionTemplate template = new TransactionTemplate(transactionManager);
@@ -365,6 +374,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         ResponderEntity responder2 = new ResponderEntity.Builder()
@@ -375,6 +385,7 @@ public class ResponderDaoTest {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         TransactionTemplate template = new TransactionTemplate(transactionManager);

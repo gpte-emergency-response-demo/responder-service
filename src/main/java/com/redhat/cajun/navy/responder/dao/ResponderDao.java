@@ -51,7 +51,7 @@ public class ResponderDao {
 
     @SuppressWarnings("unchecked")
     public List<ResponderEntity> availableResponders() {
-        return (List<ResponderEntity>) entityManager.createQuery("SELECT r FROM ResponderEntity r WHERE r.available = true")
+        return (List<ResponderEntity>) entityManager.createQuery("SELECT r FROM ResponderEntity r WHERE r.available = true and r.enrolled = true")
                 .getResultList();
     }
 }

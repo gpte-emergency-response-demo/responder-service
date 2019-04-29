@@ -56,6 +56,7 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .person(true)
+                .enrolled(true)
                 .build();
 
         when(responderDao.findById(any(Long.class))).thenReturn(found);
@@ -93,6 +94,7 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .person(true)
+                .enrolled(true)
                 .build();
 
         ResponderEntity responder2 = new ResponderEntity.Builder(2L, 0L)
@@ -104,6 +106,7 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .person(true)
+                .enrolled(true)
                 .build();
 
         List<ResponderEntity> responderEntities = new ArrayList<>();
@@ -147,6 +150,7 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .person(true)
+                .enrolled(true)
                 .build();
         setField(currentEntity, "id", 1, null);
 
@@ -205,6 +209,7 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(false)
                 .person(true)
+                .enrolled(true)
                 .build();
 
         when(responderDao.findById(1L)).thenReturn(currentEntity);
@@ -238,6 +243,7 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .person(true)
+                .enrolled(true)
                 .build();
 
         doAnswer(invocation -> {
@@ -272,6 +278,7 @@ public class ResponderServiceTest {
                 .medicalKit(true)
                 .available(true)
                 .person(true)
+                .enrolled(true)
                 .build();
 
         when(responderDao.findByName(any(String.class))).thenReturn(found);

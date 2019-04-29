@@ -87,7 +87,8 @@ public class ResponderControllerIT {
                 "\"longitude\" : -70.98765," +
                 "\"boatCapacity\" : 3," +
                 "\"medicalKit\" : true," +
-                "\"available\": true" +
+                "\"available\": true," +
+                "\"enrolled\": true" +
                 "}";
 
         given().request().contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).body(json).post("/responder")
@@ -105,6 +106,7 @@ public class ResponderControllerIT {
         assertThat(responder.getBoatCapacity(), equalTo(3));
         assertThat(responder.isMedicalKit(), equalTo(true));
         assertThat(responder.isAvailable(), equalTo(true));
+        assertThat(responder.isEnrolled(), equalTo(true));
     }
 
     @Test
@@ -118,6 +120,7 @@ public class ResponderControllerIT {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         when(responderService.getResponderByName(any(String.class))).thenReturn(responder);
@@ -152,6 +155,7 @@ public class ResponderControllerIT {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         Responder responder2 = new Responder.Builder("2")
@@ -162,6 +166,7 @@ public class ResponderControllerIT {
                 .boatCapacity(2)
                 .medicalKit(true)
                 .available(true)
+                .enrolled(true)
                 .build();
 
         List<Responder> responders = new ArrayList<>();
