@@ -88,6 +88,7 @@ public class ResponderControllerIT {
                 "\"boatCapacity\" : 3," +
                 "\"medicalKit\" : true," +
                 "\"available\": true," +
+                "\"person\": true," +
                 "\"enrolled\": true" +
                 "}";
 
@@ -106,6 +107,7 @@ public class ResponderControllerIT {
         assertThat(responder.getBoatCapacity(), equalTo(3));
         assertThat(responder.isMedicalKit(), equalTo(true));
         assertThat(responder.isAvailable(), equalTo(true));
+        assertThat(responder.isPerson(), equalTo(true));
         assertThat(responder.isEnrolled(), equalTo(true));
     }
 
@@ -120,6 +122,7 @@ public class ResponderControllerIT {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
                 .enrolled(true)
                 .build();
 
@@ -131,7 +134,10 @@ public class ResponderControllerIT {
                 .assertThat()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("name", equalTo("John Doe"));
+                .body("name", equalTo("John Doe"))
+                .body("available", equalTo(true))
+                .body("person", equalTo(true))
+                .body("enrolled", equalTo(true));
     }
 
     @Test

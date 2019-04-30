@@ -102,6 +102,76 @@ public class ResponderDaoTest {
     }
 
     @Test
+    @Transactional
+    public void testAvailableRespondersNotEnrolled() {
+
+        responderDao.deleteAll();
+
+        ResponderEntity responder1 = new ResponderEntity.Builder()
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .currentPositionLatitude(new BigDecimal("30.12345"))
+                .currentPositionLongitude(new BigDecimal("-70.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(false)
+                .build();
+
+        ResponderEntity responder2 = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .enrolled(false)
+                .build();
+
+        responderDao.create(responder1);
+        responderDao.create(responder2);
+
+        List<ResponderEntity> responders = responderDao.availableResponders();
+        assertThat(responders.size(), equalTo(0));
+    }
+
+    @Test
+    @Transactional
+    public void testAvailableRespondersNotAvailable() {
+
+        responderDao.deleteAll();
+
+        ResponderEntity responder1 = new ResponderEntity.Builder()
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .currentPositionLatitude(new BigDecimal("30.12345"))
+                .currentPositionLongitude(new BigDecimal("-70.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        ResponderEntity responder2 = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        responderDao.create(responder1);
+        responderDao.create(responder2);
+
+        List<ResponderEntity> responders = responderDao.availableResponders();
+        assertThat(responders.size(), equalTo(0));
+    }
+
+    @Test
     public void testFindById() {
 
         responderDao.deleteAll();

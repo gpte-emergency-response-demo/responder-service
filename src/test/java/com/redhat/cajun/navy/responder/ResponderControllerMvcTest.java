@@ -117,6 +117,8 @@ public class ResponderControllerMvcTest {
                 .boatCapacity(3)
                 .medicalKit(true)
                 .available(true)
+                .person(true)
+                .enrolled(true)
                 .build();
 
         when(responderService.getResponderByName(any(String.class))).thenReturn(responder);
@@ -124,8 +126,11 @@ public class ResponderControllerMvcTest {
         URI url = UriComponentsBuilder.fromUriString("/responder/byname").pathSegment("John Doe").build().encode().toUri();
         final ResultActions result = mockMvc.perform(get(url).accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
 
-        result.andExpect(status().isOk());
-        result.andExpect(jsonPath("$.name").value("John Doe"));
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("John Doe"))
+                .andExpect(jsonPath("$.available").value(true))
+                .andExpect(jsonPath("$.person").value(true))
+                .andExpect(jsonPath("$.enrolled").value(true));
 
         verify(responderService).getResponderByName(eq("John Doe"));
     }
