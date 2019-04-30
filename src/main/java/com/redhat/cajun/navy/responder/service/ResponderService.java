@@ -34,7 +34,7 @@ public class ResponderService {
         jdbcTemplate = new JdbcTemplate(datasource);
         ResponderStats stats = new ResponderStats();
         String sqlTotal = "SELECT count(responder_id) FROM responder";
-        String sqlActive = "SELECT count(mission_id) FROM mission where current_status IN ('Assigned','Pickedup')";
+        String sqlActive = "SELECT count(responder_id) FROM responder where available=true and enrolled=true";
         stats.setTotal(jdbcTemplate.queryForObject(sqlTotal, Integer.class));
         stats.setActive(jdbcTemplate.queryForObject(sqlActive, Integer.class));
         return stats;
