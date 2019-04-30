@@ -50,9 +50,6 @@ public class ResponderEntity {
     @Column(name = "enrolled")
     private Boolean enrolled;
 
-
-
-
     @Column(name = "version")
     @Version
     private long version;
