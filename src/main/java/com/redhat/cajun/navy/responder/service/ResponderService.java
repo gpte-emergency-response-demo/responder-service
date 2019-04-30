@@ -62,6 +62,7 @@ public class ResponderService {
                 .medicalKit(responderEntity.getMedicalKit())
                 .available(responderEntity.isAvailable())
                 .person(responderEntity.isPerson())
+                .enrolled(responderEntity.isEnrolled())
                 .build())
                 .collect(Collectors.toList());
     }
@@ -122,6 +123,9 @@ public class ResponderService {
         if (updated.isPerson() != null && !updated.isPerson().equals(current.isPerson())) {
             return true;
         }
+        if (updated.isEnrolled() != null && !updated.isEnrolled().equals(current.isEnrolled())) {
+            return true;
+        }
         return false;
     }
 
@@ -139,6 +143,7 @@ public class ResponderService {
                 .boatCapacity(responder.getBoatCapacity())
                 .medicalKit(responder.isMedicalKit())
                 .available(responder.isAvailable())
+                .enrolled(responder.isEnrolled())
                 .person(responder.isPerson())
                 .build();
     }
@@ -158,6 +163,7 @@ public class ResponderService {
                 .medicalKit(responder.isMedicalKit() == null ? current.getMedicalKit() : responder.isMedicalKit())
                 .available(responder.isAvailable() == null ? current.isAvailable() : responder.isAvailable())
                 .person(responder.isPerson() == null ? current.isPerson() : responder.isPerson())
+                .enrolled(responder.isEnrolled() == null ? current.isEnrolled() : responder.isEnrolled())
                 .build();
     }
 
@@ -176,6 +182,7 @@ public class ResponderService {
                 .medicalKit(responder.getMedicalKit())
                 .available(responder.isAvailable())
                 .person(responder.isPerson())
+                .enrolled(responder.isEnrolled())
                 .build();
     }
 }

@@ -47,6 +47,9 @@ public class ResponderEntity {
     @Column(name = "person")
     private Boolean person;
 
+    @Column(name = "enrolled")
+    private Boolean enrolled;
+
     @Column(name = "version")
     @Version
     private long version;
@@ -87,6 +90,10 @@ public class ResponderEntity {
         return person;
     }
 
+    public Boolean isEnrolled() {
+        return enrolled;
+    }
+
     public long getVersion() {
         return version;
     }
@@ -110,6 +117,7 @@ public class ResponderEntity {
             responder.id = r.getId();
             responder.available = r.isAvailable();
             responder.person = r.isPerson();
+            responder.enrolled = r.isEnrolled();
             responder.medicalKit = r.getMedicalKit();
             responder.boatCapacity = r.getBoatCapacity();
             responder.currentPositionLatitude = r.getCurrentPositionLatitude();
@@ -156,6 +164,11 @@ public class ResponderEntity {
 
         public Builder person(boolean person) {
             responder.person = person;
+            return this;
+        }
+
+        public Builder enrolled(boolean enrolled) {
+            responder.enrolled = enrolled;
             return this;
         }
 

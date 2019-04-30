@@ -23,6 +23,8 @@ public class Responder {
 
     private Boolean person;
 
+    private Boolean enrolled;
+
     public String getId() {
         return id;
     }
@@ -57,6 +59,10 @@ public class Responder {
 
     public Boolean isPerson() {
         return person;
+    }
+
+    public Boolean isEnrolled() {
+        return enrolled;
     }
 
     public static class Builder {
@@ -105,6 +111,11 @@ public class Responder {
 
         public Builder person(boolean person) {
             responder.person = person;
+            return this;
+        }
+
+        public Builder enrolled(boolean enrolled) {
+            responder.enrolled = enrolled;
             return this;
         }
 
