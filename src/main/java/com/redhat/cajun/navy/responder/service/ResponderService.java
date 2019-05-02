@@ -104,7 +104,8 @@ public class ResponderService {
     }
 
     @Transactional
-    public void update(List<Responder> responders) {
+    public void init(List<Responder> responders) {
+        responderDao.reset();
         responders.stream().map(r -> new ImmutablePair<>(r, responderDao.findById(new Long(r.getId()))))
                 .filter(p -> p.getRight() != null)
             .map(p -> fromResponder(p.getLeft(), p.getRight()))

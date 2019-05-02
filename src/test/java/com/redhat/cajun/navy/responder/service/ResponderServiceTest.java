@@ -455,8 +455,9 @@ public class ResponderServiceTest {
         when(responderDao.findById(1L)).thenReturn(currentEntity1);
         when(responderDao.findById(2L)).thenReturn(currentEntity2);
 
-        service.update(toUpdateList);
+        service.init(toUpdateList);
 
+        verify(responderDao).reset();
         verify(responderDao, times(2)).findById(any(Long.class));
         verify(responderDao, times(2)).merge(entityCaptor.capture());
         List<ResponderEntity> captured = entityCaptor.getAllValues();
