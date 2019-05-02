@@ -100,11 +100,13 @@ public class ResponderService {
 
     @Transactional
     public void reset() {
+        log.info("Reset called");
         responderDao.reset();
     }
 
     @Transactional
     public void init(List<Responder> responders) {
+        log.info("Init called for " + responders.size() + "responders");
         responderDao.reset();
         responders.stream().map(r -> new ImmutablePair<>(r, responderDao.findById(new Long(r.getId()))))
                 .filter(p -> p.getRight() != null)
