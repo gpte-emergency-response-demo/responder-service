@@ -54,4 +54,13 @@ public class ResponderDao {
         return (List<ResponderEntity>) entityManager.createQuery("SELECT r FROM ResponderEntity r WHERE r.available = true and r.enrolled = true")
                 .getResultList();
     }
+
+    public Long enrolledRespondersCount() {
+        return (Long) entityManager.createQuery("SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true").getSingleResult();
+    }
+
+    public Long activeRespondersCount() {
+        return (Long) entityManager
+                .createQuery("SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true AND r.available = false").getSingleResult();
+    }
 }

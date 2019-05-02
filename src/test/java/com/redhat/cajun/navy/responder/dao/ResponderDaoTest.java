@@ -477,4 +477,169 @@ public class ResponderDaoTest {
         });
     }
 
+    @Test
+    public void testEnrolledRespondersCount() {
+
+        responderDao.deleteAll();
+
+        //stop the current transaction
+        TestTransaction.end();
+
+        ResponderEntity responder = new ResponderEntity.Builder()
+                .name("John Foo I")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .enrolled(true)
+                .build();
+
+        ResponderEntity responder2 = new ResponderEntity.Builder()
+                .name("John Foo II")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        ResponderEntity responder3 = new ResponderEntity.Builder()
+                .name("John Foo III")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .enrolled(false)
+                .build();
+
+        ResponderEntity responder4 = new ResponderEntity.Builder()
+                .name("John Foo IV")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(false)
+                .build();
+
+        ResponderEntity responder5 = new ResponderEntity.Builder()
+                .name("John Foo IV")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .enrolled(true)
+                .build();
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.create(responder);
+            responderDao.create(responder2);
+            responderDao.create(responder3);
+            responderDao.create(responder4);
+            responderDao.create(responder5);
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            Long count = responderDao.enrolledRespondersCount();
+            assertThat(count, equalTo(3L));
+            return null;
+        });
+    }
+
+    @Test
+    public void testActiveRespondersCount() {
+
+        responderDao.deleteAll();
+
+        //stop the current transaction
+        TestTransaction.end();
+
+        ResponderEntity responder = new ResponderEntity.Builder()
+                .name("John Foo I")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .enrolled(true)
+                .build();
+
+        ResponderEntity responder2 = new ResponderEntity.Builder()
+                .name("John Foo II")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        ResponderEntity responder3 = new ResponderEntity.Builder()
+                .name("John Foo III")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(true)
+                .enrolled(false)
+                .build();
+
+        ResponderEntity responder4 = new ResponderEntity.Builder()
+                .name("John Foo IV")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(false)
+                .build();
+
+        ResponderEntity responder5 = new ResponderEntity.Builder()
+                .name("John Foo IV")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.create(responder);
+            responderDao.create(responder2);
+            responderDao.create(responder3);
+            responderDao.create(responder4);
+            responderDao.create(responder5);
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            Long count = responderDao.activeRespondersCount();
+            assertThat(count, equalTo(2L));
+            return null;
+        });
+
+
+    }
+
+
 }
