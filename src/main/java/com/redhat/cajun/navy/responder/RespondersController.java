@@ -64,4 +64,16 @@ public class RespondersController {
         responderService.updateResponder(responder);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+    @RequestMapping(value = "/responders/reset", method = RequestMethod.POST)
+    public ResponseEntity reset() {
+        responderService.reset();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/responders/init", method = RequestMethod.POST)
+    public ResponseEntity init(@RequestBody List<Responder> responders) {
+        responderService.init(responders);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
