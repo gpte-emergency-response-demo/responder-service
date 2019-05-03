@@ -13,13 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResponderDao {
 
-    private String[] coordinates = {"34.16877, -77.87045", "34.18323, -77.84099", "34.23670, -77.83479", "34.14338, -77.88274",
-            "34.29256, -77.86569", "34.12679, -77.87353", "34.29515, -77.81463", "34.29103, -77.86601", "34.24544, -77.83508",
-            "34.15140, -77.89115", "34.12112, -77.94435", "34.12579, -77.89562", "34.26845, -77.84534", "34.24732, -77.82757",
-            "34.15593, -77.88559", "34.25137, -77.82163", "34.28515, -77.81113", "34.22543, -77.89744", "34.21485, -77.88824",
-            "34.17537, -77.83297", "34.23755, -77.84025", "34.18062, -77.82813", "34.28235, -77.83150", "34.13362, -77.87096",
-            "34.22852, -77.88805"};
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -62,6 +55,7 @@ public class ResponderDao {
                 .getResultList();
     }
 
+    @SuppressWarnings("unchecked")
     public void reset() {
         Query select = entityManager.createQuery("SELECT r FROM ResponderEntity r");
         List<ResponderEntity> results = select.getResultList();
@@ -76,6 +70,7 @@ public class ResponderDao {
         entityManager.flush();
     }
 
+    @SuppressWarnings("unchecked")
     public void init() {
         Query select = entityManager.createQuery("SELECT r FROM ResponderEntity r");
         List<ResponderEntity> results = select.getResultList();
@@ -83,5 +78,15 @@ public class ResponderDao {
                 .map(r -> new ResponderEntity.Builder(r).available(true).build())
                 .forEach(r -> entityManager.merge(r));
         entityManager.flush();
+    }
+
+    public Long enrolledRespondersCount() {
+        return (Long) entityManager.createQuery("SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true").getSingleResult();
+    }
+
+    public Long activeRespondersCount() {
+        return (Long) entityManager
+                .createQuery("SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true AND r.available = false").getSingleResult();
+
     }
 }

@@ -2,7 +2,6 @@ package com.redhat.cajun.navy.responder.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.sql.DataSource;
 
 import com.redhat.cajun.navy.responder.dao.ResponderDao;
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
@@ -14,7 +13,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,20 +22,13 @@ public class ResponderService {
     private static Logger log = LoggerFactory.getLogger(ResponderService.class);
 
     @Autowired
-    private DataSource datasource;
-
-    @Autowired
     private ResponderDao responderDao;
 
-    private JdbcTemplate jdbcTemplate;
-
+    @Transactional
     public ResponderStats getResponderStats() {
-        jdbcTemplate = new JdbcTemplate(datasource);
         ResponderStats stats = new ResponderStats();
-        String sqlTotal = "SELECT count(responder_id) FROM responder";
-        String sqlActive = "SELECT count(responder_id) FROM responder where available=true and enrolled=true";
-        stats.setTotal(jdbcTemplate.queryForObject(sqlTotal, Integer.class));
-        stats.setActive(jdbcTemplate.queryForObject(sqlActive, Integer.class));
+        stats.setTotal(responderDao.enrolledRespondersCount().intValue());
+        stats.setActive(responderDao.activeRespondersCount().intValue());
         return stats;
     }
 

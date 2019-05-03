@@ -23,6 +23,7 @@ import java.util.List;
 import com.redhat.cajun.navy.responder.dao.ResponderDao;
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
 import com.redhat.cajun.navy.responder.model.Responder;
+import com.redhat.cajun.navy.responder.model.ResponderStats;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Before;
 import org.junit.Test;
@@ -484,6 +485,20 @@ public class ResponderServiceTest {
         assertThat(entity2.isAvailable(), equalTo(true));
         assertThat(entity2.isPerson(), equalTo(false));
         assertThat(entity2.isEnrolled(), equalTo(true));
+    }
+
+    @Test
+    public void testResponderStats() {
+        when(responderDao.enrolledRespondersCount()).thenReturn(new Long(10));
+        when(responderDao.activeRespondersCount()).thenReturn(new Long(5));
+
+        ResponderStats stats = service.getResponderStats();
+
+        assertThat(stats, notNullValue());
+        assertThat(stats.getTotal(), equalTo(10));
+        assertThat(stats.getActive(), equalTo(5));
+        verify(responderDao).enrolledRespondersCount();
+        verify(responderDao).activeRespondersCount();
     }
 
 }
