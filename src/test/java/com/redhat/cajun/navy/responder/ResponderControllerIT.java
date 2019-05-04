@@ -195,6 +195,30 @@ public class ResponderControllerIT {
                 .statusCode(404);
     }
 
+    @Test
+    public void testReset() {
+
+        URI url = UriComponentsBuilder.fromUriString("/responders/reset").build().encode().toUri();
+        given().request().post(url.toASCIIString())
+                .then()
+                .assertThat()
+                .statusCode(200);
+
+        verify(responderService).reset();
+    }
+
+    @Test
+    public void testClear() {
+
+        URI url = UriComponentsBuilder.fromUriString("/responders/clear").build().encode().toUri();
+        given().request().post(url.toASCIIString())
+                .then()
+                .assertThat()
+                .statusCode(200);
+
+        verify(responderService).clear();
+    }
+
     private void initService() {
         Responder responder1 = new Responder.Builder("1")
                 .name("John Doe")

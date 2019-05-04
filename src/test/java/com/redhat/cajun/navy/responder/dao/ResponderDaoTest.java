@@ -563,6 +563,82 @@ public class ResponderDaoTest {
     }
 
     @Test
+    public void testClear() {
+        responderDao.deleteAll();
+
+        //stop the current transaction
+        TestTransaction.end();
+
+        ResponderEntity responder = new ResponderEntity.Builder()
+                .name("John Foo")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .person(false)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        ResponderEntity responder2 = new ResponderEntity.Builder()
+                .name("John Foo II")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .person(false)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        ResponderEntity responder3 = new ResponderEntity.Builder()
+                .name("John Foo III")
+                .phoneNumber("999-888-777")
+                .currentPositionLatitude(new BigDecimal("35.12345"))
+                .currentPositionLongitude(new BigDecimal("-75.98765"))
+                .boatCapacity(2)
+                .medicalKit(true)
+                .person(true)
+                .available(false)
+                .enrolled(true)
+                .build();
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.create(responder);
+            responderDao.create(responder2);
+            responderDao.create(responder3);
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            responderDao.clear();
+            return null;
+        });
+
+        template = new TransactionTemplate(transactionManager);
+        template.execute((TransactionStatus s) -> {
+            ResponderEntity r = responderDao.findByName("John Foo");
+            assertThat(r, nullValue());
+
+            r = responderDao.findByName("John Foo II");
+            assertThat(r, nullValue());
+
+            r = responderDao.findByName("John Foo III");
+            assertThat(r, notNullValue());
+            assertThat(r.isEnrolled(), equalTo(false));
+            assertThat(r.isAvailable(), equalTo(true));
+            assertThat(r.isPerson(), equalTo(true));
+            assertThat(r.getCurrentPositionLatitude(), nullValue());
+            assertThat(r.getCurrentPositionLongitude(), nullValue());
+            return null;
+        });
+    }
+
+    @Test
     public void testEnrolledRespondersCount() {
 
         responderDao.deleteAll();

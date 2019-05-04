@@ -20,7 +20,7 @@ public class ResponderDao {
         entityManager.persist(responder);
     }
 
-    public void deleteAll() {
+    void deleteAll() {
         Query deleteAll = entityManager.createQuery("DELETE FROM ResponderEntity");
         deleteAll.executeUpdate();
     }
@@ -71,11 +71,14 @@ public class ResponderDao {
     }
 
     @SuppressWarnings("unchecked")
-    public void init() {
-        Query select = entityManager.createQuery("SELECT r FROM ResponderEntity r");
-        List<ResponderEntity> results = select.getResultList();
-        results.stream().filter(responderEntity -> responderEntity.getId() <= 25)
-                .map(r -> new ResponderEntity.Builder(r).available(true).build())
+    public void clear() {
+        Query deleteNonPersons = entityManager.createQuery("DELETE FROM ResponderEntity r where r.person = false");
+        deleteNonPersons.executeUpdate();
+        Query persons = entityManager.createQuery("SELECT r FROM ResponderEntity r where r.person = true");
+        List<ResponderEntity> results = persons.getResultList();
+        results.stream()
+                .map(r -> new ResponderEntity.Builder(r).available(true).enrolled(false)
+                        .currentPositionLatitude(null).currentPositionLongitude(null).build())
                 .forEach(r -> entityManager.merge(r));
         entityManager.flush();
     }

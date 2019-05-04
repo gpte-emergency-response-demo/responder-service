@@ -78,9 +78,9 @@ public class RespondersController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/responders/init", method = RequestMethod.POST)
-    public ResponseEntity init(@RequestBody List<Responder> responders) {
-        responderService.init(responders);
+    @RequestMapping(value = "/responders/clear", method = RequestMethod.POST)
+    public ResponseEntity clear() {
+        responderService.clear();
         return new ResponseEntity(HttpStatus.OK);
     }
 }
