@@ -68,6 +68,11 @@ public class ResponderService {
     }
 
     @Transactional
+    public void createResponders(List<Responder> responders) {
+        responders.stream().map(this::fromResponder).forEach(e -> responderDao.create(e));
+    }
+
+    @Transactional
     public Triple<Boolean, String, Responder> updateResponder(Responder toUpdate) {
 
         ResponderEntity current = responderDao.findById(new Long(toUpdate.getId()));

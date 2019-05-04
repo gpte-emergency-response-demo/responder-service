@@ -1,6 +1,7 @@
 package com.redhat.cajun.navy.responder;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -58,6 +59,9 @@ public class ResponderControllerIT {
     @Captor
     private ArgumentCaptor<Responder> responderCaptor;
 
+    @Captor
+    private ArgumentCaptor<List<Responder>> responderListCaptor;
+
     @Before
     public void initTest() {
         RestAssured.baseURI = String.format("http://localhost:%d", port);
@@ -109,6 +113,45 @@ public class ResponderControllerIT {
         assertThat(responder.isAvailable(), equalTo(true));
         assertThat(responder.isPerson(), equalTo(true));
         assertThat(responder.isEnrolled(), equalTo(true));
+    }
+
+    @Test
+    public void testCreateResponders() {
+
+        String json = "[" + "{" +
+                "\"name\" : \"John Doe\"," +
+                "\"phoneNumber\" : \"111-222-333\"," +
+                "\"latitude\" : 30.12345," +
+                "\"longitude\" : -70.98765," +
+                "\"boatCapacity\" : 3," +
+                "\"medicalKit\" : true," +
+                "\"available\": true," +
+                "\"person\": true," +
+                "\"enrolled\": true" +
+                "}" +"," +
+                "{" +
+                "\"name\" : \"John Foo\"," +
+                "\"phoneNumber\" : \"222-333-444\"," +
+                "\"latitude\" : 31.12345," +
+                "\"longitude\" : -71.98765," +
+                "\"boatCapacity\" : 4," +
+                "\"medicalKit\" : true," +
+                "\"available\": true," +
+                "\"person\": false," +
+                "\"enrolled\": true" +
+                "}" +
+                "]";
+
+        given().request().contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).body(json).post("/responders")
+                .then()
+                .assertThat()
+                .statusCode(201);
+
+        verify(responderService).createResponders(responderListCaptor.capture());
+        List<Responder> responders = responderListCaptor.getValue();
+        assertThat(responders, notNullValue());
+        assertThat(responders.size(), equalTo(2));
+        assertThat(responders.get(0).getName(), anyOf(equalTo("John Doe"), equalTo("John Foo")));
     }
 
     @Test

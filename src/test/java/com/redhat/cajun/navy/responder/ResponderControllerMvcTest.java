@@ -1,5 +1,6 @@
 package com.redhat.cajun.navy.responder;
 
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -57,6 +58,9 @@ public class ResponderControllerMvcTest {
     @Captor
     private ArgumentCaptor<Responder> responderCaptor;
 
+    @Captor
+    private ArgumentCaptor<List<Responder>> responderListCaptor;
+
     @Before
     public void initTest() {
         mockMvc = MockMvcBuilders
@@ -104,6 +108,44 @@ public class ResponderControllerMvcTest {
         assertThat(responder.getBoatCapacity(), equalTo(3));
         assertThat(responder.isMedicalKit(), equalTo(true));
         assertThat(responder.isAvailable(), equalTo(true));
+    }
+
+    @Test
+    public void testCreateResponders() throws Exception {
+
+        String json = "[" + "{" +
+                "\"name\" : \"John Doe\"," +
+                "\"phoneNumber\" : \"111-222-333\"," +
+                "\"latitude\" : 30.12345," +
+                "\"longitude\" : -70.98765," +
+                "\"boatCapacity\" : 3," +
+                "\"medicalKit\" : true," +
+                "\"available\": true," +
+                "\"person\": true," +
+                "\"enrolled\": true" +
+                "}" +"," +
+                "{" +
+                "\"name\" : \"John Foo\"," +
+                "\"phoneNumber\" : \"222-333-444\"," +
+                "\"latitude\" : 31.12345," +
+                "\"longitude\" : -71.98765," +
+                "\"boatCapacity\" : 4," +
+                "\"medicalKit\" : true," +
+                "\"available\": true," +
+                "\"person\": false," +
+                "\"enrolled\": true" +
+                "}" +
+                "]";
+
+        final ResultActions result = mockMvc.perform(post("/responders")
+                .contentType(MimeTypeUtils.APPLICATION_JSON_VALUE).content(json));
+
+        result.andExpect(status().isCreated());
+        verify(responderService).createResponders(responderListCaptor.capture());
+        List<Responder> responders = responderListCaptor.getValue();
+        assertThat(responders, notNullValue());
+        assertThat(responders.size(), equalTo(2));
+        assertThat(responders.get(0).getName(), anyOf(equalTo("John Doe"), equalTo("John Foo")));
     }
 
     @Test

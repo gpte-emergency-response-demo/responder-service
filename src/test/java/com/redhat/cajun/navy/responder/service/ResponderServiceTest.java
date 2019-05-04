@@ -501,4 +501,43 @@ public class ResponderServiceTest {
         verify(responderDao).activeRespondersCount();
     }
 
+    @Test
+    public void testCreateResponders() {
+
+        Responder toCreate1 = new Responder.Builder(null)
+                .name("John Doe")
+                .phoneNumber("111-222-333")
+                .latitude(new BigDecimal("30.12345"))
+                .longitude(new BigDecimal("-70.98765"))
+                .boatCapacity(3)
+                .medicalKit(true)
+                .available(true)
+                .person(false)
+                .enrolled(true)
+                .build();
+
+        Responder toCreate2 = new Responder.Builder(null)
+                .name("John Foo")
+                .phoneNumber("222-333-4443")
+                .latitude(new BigDecimal("31.12345"))
+                .longitude(new BigDecimal("-71.98765"))
+                .boatCapacity(6)
+                .medicalKit(true)
+                .available(true)
+                .person(false)
+                .enrolled(true)
+                .build();
+
+        doAnswer(invocation -> {
+            ResponderEntity entity = invocation.getArgument(0);
+            assertThat(entity.getId(), equalTo(0L));
+            setField(entity, "id", 100, null);
+            return null;
+        }).when(responderDao).create(any(ResponderEntity.class));
+
+        service.createResponders(Arrays.asList(toCreate1, toCreate2));
+
+        verify(responderDao, times(2)).create(entityCaptor.capture());
+    }
+
 }
