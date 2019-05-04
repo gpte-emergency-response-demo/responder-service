@@ -7,7 +7,6 @@ import com.redhat.cajun.navy.responder.dao.ResponderDao;
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
 import com.redhat.cajun.navy.responder.model.Responder;
 import com.redhat.cajun.navy.responder.model.ResponderStats;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
@@ -101,18 +100,9 @@ public class ResponderService {
     }
 
     @Transactional
-    public void init(List<Responder> responders) {
-        log.info("Init called for " + responders.size() + " responders");
-        responderDao.reset();
-        responders.stream().map(r -> new ImmutablePair<>(r, responderDao.findById(new Long(r.getId()))))
-                .filter(p -> p.getRight() != null)
-            .map(p -> fromResponder(p.getLeft(), p.getRight()))
-            .forEach(e -> responderDao.merge(e));
-    }
-
-    @Transactional
-    public void init() {
-        responderDao.init();
+    public void clear() {
+        log.info("Clear called");
+        responderDao.clear();
     }
 
     private boolean stateChanged(ResponderEntity current, ResponderEntity updated) {
