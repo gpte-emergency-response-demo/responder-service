@@ -14,7 +14,7 @@ import javax.persistence.Version;
 
 @Entity
 @Access(AccessType.FIELD)
-@SequenceGenerator(name="ResponderSeq", sequenceName="responder_sequence")
+@SequenceGenerator(name="ResponderSeq", sequenceName="responder_sequence", allocationSize = 10)
 @Table(name = "Responder")
 public class ResponderEntity {
 
