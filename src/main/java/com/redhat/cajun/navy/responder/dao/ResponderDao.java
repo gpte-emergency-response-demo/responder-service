@@ -5,7 +5,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import com.redhat.cajun.navy.responder.entity.ResponderEntity;
 import org.springframework.stereotype.Component;
@@ -21,19 +20,16 @@ public class ResponderDao {
     }
 
     void deleteAll() {
-        Query deleteAll = entityManager.createQuery("DELETE FROM ResponderEntity");
-        deleteAll.executeUpdate();
+        entityManager.createNamedQuery("Responder.deleteAll").executeUpdate();
     }
 
     public ResponderEntity findById(long id) {
         return entityManager.find(ResponderEntity.class, id, LockModeType.OPTIMISTIC);
     }
 
-    @SuppressWarnings("unchecked")
     public ResponderEntity findByName(String name) {
-        Query q = entityManager.createQuery("SELECT r FROM ResponderEntity r WHERE r.name = :name");
-        q.setParameter("name", name);
-        List<ResponderEntity> results = q.getResultList();
+        List<ResponderEntity> results = entityManager.createNamedQuery("Responder.findByName", ResponderEntity.class)
+                .setParameter("name", name).getResultList();
         if (results.isEmpty()) {
             return null;
         } else if (results.size() == 1) {
@@ -49,16 +45,12 @@ public class ResponderDao {
         return r;
     }
 
-    @SuppressWarnings("unchecked")
     public List<ResponderEntity> availableResponders() {
-        return (List<ResponderEntity>) entityManager.createQuery("SELECT r FROM ResponderEntity r WHERE r.available = true and r.enrolled = true")
-                .getResultList();
+        return entityManager.createNamedQuery("Responder.availableResponders", ResponderEntity.class).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     public void reset() {
-        Query select = entityManager.createQuery("SELECT r FROM ResponderEntity r");
-        List<ResponderEntity> results = select.getResultList();
+        List<ResponderEntity> results = entityManager.createNamedQuery("Responder.allResponders", ResponderEntity.class).getResultList();
         results.stream()
             .map(r -> {
                 ResponderEntity.Builder rb = new ResponderEntity.Builder(r).available(true).enrolled(false);
@@ -70,12 +62,9 @@ public class ResponderDao {
         entityManager.flush();
     }
 
-    @SuppressWarnings("unchecked")
     public void clear() {
-        Query deleteNonPersons = entityManager.createQuery("DELETE FROM ResponderEntity r where r.person = false");
-        deleteNonPersons.executeUpdate();
-        Query persons = entityManager.createQuery("SELECT r FROM ResponderEntity r where r.person = true");
-        List<ResponderEntity> results = persons.getResultList();
+        entityManager.createNamedQuery("Responder.deleteNonPersons").executeUpdate();
+        List<ResponderEntity> results = entityManager.createNamedQuery("Responder.persons", ResponderEntity.class).getResultList();
         results.stream()
                 .map(r -> new ResponderEntity.Builder(r).available(true).enrolled(false)
                         .currentPositionLatitude(null).currentPositionLongitude(null).build())
@@ -84,12 +73,10 @@ public class ResponderDao {
     }
 
     public Long enrolledRespondersCount() {
-        return (Long) entityManager.createQuery("SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true").getSingleResult();
+        return (Long) entityManager.createNamedQuery("Responder.countEnrolled").getSingleResult();
     }
 
     public Long activeRespondersCount() {
-        return (Long) entityManager
-                .createQuery("SELECT COUNT(r.id) FROM ResponderEntity r WHERE r.enrolled = true AND r.available = false").getSingleResult();
-
+        return (Long) entityManager.createNamedQuery("Responder.countActive").getSingleResult();
     }
 }
